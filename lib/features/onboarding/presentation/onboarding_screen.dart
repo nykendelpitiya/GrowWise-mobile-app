@@ -3,12 +3,15 @@ import 'package:growwise_mobile_app/core/constants/app_colors.dart';
 import 'step1.dart';
 import 'step2.dart';
 import 'step3.dart';
-
-// ✅ CORRECT LOGIN IMPORT
 import 'package:growwise_mobile_app/features/auth/presentation/login_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({super.key});
+  final int initialPage;
+
+  const OnboardingScreen({
+    super.key,
+    this.initialPage = 0,
+  });
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -21,16 +24,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   void initState() {
     super.initState();
-    _controller = PageController();
+    currentPage = widget.initialPage;
+    _controller = PageController(initialPage: widget.initialPage);
   }
 
   @override
   void dispose() {
-    _controller.dispose(); // 🔥 memory leak prevent
+    _controller.dispose();
     super.dispose();
   }
 
-  /// 🔥 NEXT / GET STARTED
   void nextPage() {
     if (currentPage < 2) {
       _controller.nextPage(
@@ -38,7 +41,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         curve: Curves.easeInOut,
       );
     } else {
-      // ✅ Last step → go to Login
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (_) => const LoginScreen()),
@@ -47,7 +49,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
   }
 
-  /// 🔥 SKIP
   void skip() {
     Navigator.pushAndRemoveUntil(
       context,
@@ -62,7 +63,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            /// 🔝 Skip Button
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Align(
@@ -81,7 +81,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
 
-            /// 📱 Pages
             Expanded(
               child: PageView(
                 controller: _controller,
@@ -91,11 +90,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     currentPage = index;
                   });
                 },
-                children: const [Step1(), Step2(), Step3()],
+                children: const [
+                  Step1(),
+                  Step2(),
+                  Step3(),
+                ],
               ),
             ),
 
-            /// 🔘 Indicators
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(3, (index) {
@@ -118,7 +120,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
             const SizedBox(height: 25),
 
-            /// 🔽 Button
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: SizedBox(
@@ -126,19 +127,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 height: 48,
                 child: ElevatedButton(
                   onPressed: nextPage,
-                  style:
-                      ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        elevation: 3,
-                        shadowColor: Colors.black26,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ).copyWith(
-                        overlayColor: MaterialStateProperty.all(
-                          Colors.white.withOpacity(0.1),
-                        ),
-                      ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    elevation: 3,
+                    shadowColor: Colors.black26,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ).copyWith(
+                    overlayColor: MaterialStateProperty.all(
+                      Colors.white.withOpacity(0.1),
+                    ),
+                  ),
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 300),
                     child: Text(
