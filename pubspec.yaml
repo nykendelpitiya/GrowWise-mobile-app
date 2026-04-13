@@ -35,8 +35,10 @@ flutter:
   - assets/images/growwise_logo.png
   - assets/images/onboarding1.png
   - assets/images/onboarding2.png
-  
- 
+  - assets/images/banner_tea.jpeg
+  - assets/images/banner_cinnamon.jpeg
+  - assets/images/banner_pepper.jpeg
+
   - assets/icons/crop.png
   - assets/icons/care.png
   - assets/icons/disease.png

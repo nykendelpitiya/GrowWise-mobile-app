@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:growwise_mobile_app/core/constants/app_colors.dart';
 import 'package:growwise_mobile_app/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:growwise_mobile_app/features/auth/presentation/register_screen.dart';
+import 'package:growwise_mobile_app/features/home/presentation/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,6 +18,13 @@ class _LoginScreenState extends State<LoginScreen> {
   bool obscurePassword = true;
   bool rememberMe = false;
   bool isLoading = false;
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   void login() async {
     FocusScope.of(context).unfocus();
@@ -35,8 +43,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
     await Future.delayed(const Duration(seconds: 2));
 
-    if (emailController.text != "testuser@example.com" ||
-        passwordController.text != "Test@123") {
+    if (emailController.text != "nusith@gmail.com" ||
+        passwordController.text != "nusith123") {
       setState(() => isLoading = false);
       _showError("Invalid email or password");
       return;
@@ -44,8 +52,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
     setState(() => isLoading = false);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Login successful")),
+    if (!mounted) return;
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const HomeScreen(),
+      ),
     );
   }
 
@@ -60,8 +73,6 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
-
-      /// ✅ UPDATED APPBAR
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -91,7 +102,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         centerTitle: false,
       ),
-
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -107,11 +117,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Center(
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 420),
-
-                    /// ✅ MOVE UP LITTLE
                     child: Transform.translate(
                       offset: const Offset(0, -35),
-
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -124,9 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               color: Colors.black,
                             ),
                           ),
-
                           const SizedBox(height: 10),
-
                           const Text(
                             "Sign in with your Email and Password\nor Continue with Social Media",
                             textAlign: TextAlign.center,
@@ -135,27 +140,21 @@ class _LoginScreenState extends State<LoginScreen> {
                               fontSize: 13,
                             ),
                           ),
-
                           const SizedBox(height: 20),
-
                           _field(
                             "Email",
                             controller: emailController,
                             keyboardType: TextInputType.emailAddress,
                             icon: Icons.email_outlined,
                           ),
-
                           const SizedBox(height: 12),
-
                           _field(
                             "Password",
                             controller: passwordController,
                             isPassword: true,
                             icon: Icons.lock_outline,
                           ),
-
                           const SizedBox(height: 6),
-
                           Row(
                             children: [
                               Checkbox(
@@ -176,9 +175,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ],
                           ),
-
                           const SizedBox(height: 10),
-
                           SizedBox(
                             width: double.infinity,
                             height: 42,
@@ -202,10 +199,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   : const Text("Login"),
                             ),
                           ),
-
                           const SizedBox(height: 16),
-
-                          /// SOCIAL ICONS (keep/remove oyata oni nam kiyanna)
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -224,18 +218,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 onTap: () {},
                               ),
+                              const SizedBox(width: 12),
                               _socialIcon(
                                 child: Image.asset(
                                   "assets/icons/twitter.png",
                                   height: 16,
-                              ),
-                              onTap: () {},
+                                ),
+                                onTap: () {},
                               ),
                             ],
                           ),
-
                           const SizedBox(height: 16),
-
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
