@@ -42,11 +42,14 @@ class FeatureCard extends StatelessWidget {
               ),
               child: Center(
                 child: SizedBox(
-                  width: 32,
-                  height: 32,
+                  width: 36, 
+                  height: 36,
                   child: FittedBox(
                     fit: BoxFit.contain,
-                    child: Image.asset(iconPath),
+                    child: Image.asset(
+                      iconPath,
+                      filterQuality: FilterQuality.high,
+                    ),
                   ),
                 ),
               ),

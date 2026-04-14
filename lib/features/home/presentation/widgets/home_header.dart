@@ -42,8 +42,8 @@ class HomeHeader extends StatelessWidget {
             
             gradient: const LinearGradient(
               colors: [
-                Color(0xFFBBF7D0),
-                Color(0xFF4ADE80),
+                Color(0xFFA7D7B7),
+                Color(0xFF4F8F68),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -52,9 +52,9 @@ class HomeHeader extends StatelessWidget {
             
             boxShadow: [
               BoxShadow(
-                color: Colors.green.withOpacity(0.25),
-                blurRadius: 12,
-                offset: const Offset(0, 6),
+                color: const Color(0xFF2F5D3E).withOpacity(0.18),
+                blurRadius: 10,
+                offset: const Offset(0, 5),
               ),
             ],
           ),

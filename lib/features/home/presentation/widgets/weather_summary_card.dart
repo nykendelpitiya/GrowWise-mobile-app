@@ -56,14 +56,17 @@ class WeatherSummaryCard extends StatelessWidget {
               ],
             ),
           ),
+
+          
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.18),
               borderRadius: BorderRadius.circular(16),
             ),
             child: const Column(
               children: [
+               
                 Row(
                   children: [
                     Icon(Icons.water_drop_outlined,
@@ -76,12 +79,15 @@ class WeatherSummaryCard extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 8),
+
+                
                 Row(
                   children: [
-                    Icon(Icons.air, color: Colors.white, size: 16),
+                    Icon(Icons.eco_outlined,
+                        color: Colors.white, size: 16),
                     SizedBox(width: 6),
                     Text(
-                      "10 km/h",
+                      "pH 6.5",
                       style: TextStyle(color: Colors.white),
                     ),
                   ],
