@@ -64,6 +64,8 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const inactiveNavColor = Color(0xFF475569);
+
     if (active) {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8), 
@@ -100,7 +102,7 @@ class _NavItem extends StatelessWidget {
           Icon(
             icon,
             size: 20, 
-            color: kTextLight,
+            color: inactiveNavColor,
           ),
           const SizedBox(height: 2),
           Text(
@@ -108,7 +110,7 @@ class _NavItem extends StatelessWidget {
             style: const TextStyle(
               fontSize: 10, 
               fontWeight: FontWeight.w500,
-              color: kTextLight,
+              color: inactiveNavColor,
             ),
           ),
         ],

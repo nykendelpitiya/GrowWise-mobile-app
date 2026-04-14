@@ -48,7 +48,7 @@ class TodayTipCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12,
                     height: 1.45,
-                    color: kTextLight,
+                    color: Color(0xFF475569),
                   ),
                 ),
               ],
