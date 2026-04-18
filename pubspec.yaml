@@ -3,44 +3,44 @@ description: "A new Flutter project."
 
 publish_to: 'none' 
 
-
 version: 1.0.0+1
 
 environment:
   sdk: ^3.9.2
 
-
 dependencies:
   flutter:
     sdk: flutter
+    
+  firebase_core: ^2.30.0
+  firebase_auth: ^4.17.0
+  cloud_firestore: ^4.17.0
+  provider: ^6.1.2
+ 
 
-  
+  google_sign_in: ^6.2.1
+
   cupertino_icons: ^1.0.8
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  
   flutter_lints: ^5.0.0
 
-
 flutter:
-
-  
   uses-material-design: true
 
-  
   assets:
-  - assets/images/growwise_logo.png
-  - assets/images/onboarding1.png
-  - assets/images/onboarding2.png
-  - assets/images/banner_tea.jpeg
-  - assets/images/banner_cinnamon.jpeg
-  - assets/images/banner_pepper.jpeg
+    - assets/images/growwise_logo.png
+    - assets/images/onboarding1.png
+    - assets/images/onboarding2.png
+    - assets/images/banner_tea.jpeg
+    - assets/images/banner_cinnamon.jpeg
+    - assets/images/banner_pepper.jpeg
 
-  - assets/icons/crop.png
-  - assets/icons/care.png
-  - assets/icons/disease.png
-  - assets/icons/google.png
-  - assets/icons/twitter.png
+    - assets/icons/crop.png
+    - assets/icons/care.png
+    - assets/icons/disease.png
+    - assets/icons/google.png
+    - assets/icons/twitter.png

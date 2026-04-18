@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "982637480206",
+    "project_id": "growwise-app-9478f",
+    "storage_bucket": "growwise-app-9478f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:982637480206:android:9af2f3ee623f99ff8a6f5f",
+        "android_client_info": {
+          "package_name": "com.example.growwise_mobile_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFTrz9xb7Yxd5EO9KRBgbwRR9rGbRee78"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:982637480206:android:11eb8cb56c43058e8a6f5f",
+        "android_client_info": {
+          "package_name": "com.growwise.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFTrz9xb7Yxd5EO9KRBgbwRR9rGbRee78"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
