@@ -31,15 +31,11 @@ class HomeHeader extends StatelessWidget {
             ],
           ),
         ),
-
-       
         Container(
           height: 48,
           width: 48,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-
-            
             gradient: const LinearGradient(
               colors: [
                 Color(0xFFA7D7B7),
@@ -48,8 +44,6 @@ class HomeHeader extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
-
-            
             boxShadow: [
               BoxShadow(
                 color: const Color(0xFF2F5D3E).withOpacity(0.18),
@@ -60,7 +54,7 @@ class HomeHeader extends StatelessWidget {
           ),
           child: const Center(
             child: Icon(
-              Icons.person,
+              Icons.notifications_none_rounded,
               size: 22,
               color: Colors.white,
             ),

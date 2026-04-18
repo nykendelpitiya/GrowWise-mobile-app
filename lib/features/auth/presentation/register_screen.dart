@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:growwise_mobile_app/core/constants/app_colors.dart';
 import 'login_screen.dart';
@@ -20,23 +22,77 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool agreeTerms = false;
   bool isLoading = false;
 
-  void register() async {
+  String? selectedDistrict;
+
+  final List<String> districts = const [
+    'Ampara',
+    'Anuradhapura',
+    'Badulla',
+    'Batticaloa',
+    'Colombo',
+    'Galle',
+    'Gampaha',
+    'Hambantota',
+    'Jaffna',
+    'Kalutara',
+    'Kandy',
+    'Kegalle',
+    'Kilinochchi',
+    'Kurunegala',
+    'Mannar',
+    'Matale',
+    'Matara',
+    'Monaragala',
+    'Mullaitivu',
+    'Nuwara Eliya',
+    'Polonnaruwa',
+    'Puttalam',
+    'Ratnapura',
+    'Trincomalee',
+    'Vavuniya',
+  ];
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> register() async {
     FocusScope.of(context).unfocus();
 
-    if (nameController.text.isEmpty ||
-        emailController.text.isEmpty ||
-        passwordController.text.isEmpty ||
-        confirmPasswordController.text.isEmpty) {
+    final name = nameController.text.trim();
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+    final confirmPassword = confirmPasswordController.text.trim();
+
+    if (name.isEmpty ||
+        email.isEmpty ||
+        password.isEmpty ||
+        confirmPassword.isEmpty) {
       _showError("Please fill all fields");
       return;
     }
 
-    if (!emailController.text.contains("@")) {
+    if (!email.contains("@")) {
       _showError("Invalid email");
       return;
     }
 
-    if (passwordController.text != confirmPasswordController.text) {
+    if (selectedDistrict == null || selectedDistrict!.isEmpty) {
+      _showError("Please select your district");
+      return;
+    }
+
+    if (password.length < 6) {
+      _showError("Password must be at least 6 characters");
+      return;
+    }
+
+    if (password != confirmPassword) {
       _showError("Passwords do not match");
       return;
     }
@@ -48,25 +104,77 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     setState(() => isLoading = true);
 
-    await Future.delayed(const Duration(seconds: 2));
+    try {
+      final userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-    setState(() => isLoading = false);
+      await userCredential.user?.updateDisplayName(name);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Account created successfully")),
-    );
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .set({
+        'fullName': name,
+        'email': email,
+        'district': selectedDistrict,
+        'notifications': true,
+        'imageUrl': '',
+        'createdAt': FieldValue.serverTimestamp(),
+      });
 
-    await Future.delayed(const Duration(milliseconds: 800));
+      await userCredential.user?.reload();
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const LoginScreen()),
-    );
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Account created successfully"),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      await Future.delayed(const Duration(milliseconds: 800));
+
+      if (!mounted) return;
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const LoginScreen(),
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      String message = "Registration failed";
+
+      if (e.code == 'email-already-in-use') {
+        message = "This email is already in use";
+      } else if (e.code == 'invalid-email') {
+        message = "Invalid email address";
+      } else if (e.code == 'weak-password') {
+        message = "Password is too weak";
+      } else if (e.code == 'operation-not-allowed') {
+        message = "Email/password sign-in is not enabled";
+      }
+
+      _showError(message);
+    } catch (e) {
+      _showError("Something went wrong. Please try again");
+    } finally {
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
+    }
   }
 
   void _showError(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(msg), backgroundColor: Colors.redAccent),
+      SnackBar(
+        content: Text(msg),
+        backgroundColor: Colors.redAccent,
+      ),
     );
   }
 
@@ -74,7 +182,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -97,7 +204,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
         centerTitle: false,
       ),
-
       resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: LayoutBuilder(
@@ -127,42 +233,74 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               color: Colors.black,
                             ),
                           ),
-
                           const SizedBox(height: 10),
-
                           const Text(
                             "Complete your details to continue",
                             style: TextStyle(color: Colors.black54),
                           ),
-
                           const SizedBox(height: 20),
-
                           _field(
                             "Full Name",
                             controller: nameController,
                             icon: Icons.person_outline,
                           ),
-
                           const SizedBox(height: 12),
-
                           _field(
                             "Email",
                             controller: emailController,
                             keyboardType: TextInputType.emailAddress,
                             icon: Icons.email_outlined,
                           ),
-
                           const SizedBox(height: 12),
-
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.82,
+                            child: DropdownButtonFormField<String>(
+                              value: selectedDistrict,
+                              decoration: InputDecoration(
+                                labelText: "District",
+                                prefixIcon: const Icon(
+                                  Icons.location_on_outlined,
+                                  color: Colors.black45,
+                                ),
+                                filled: true,
+                                fillColor: Colors.white,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 10,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(26),
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade300),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(26),
+                                  borderSide: const BorderSide(
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                              ),
+                              items: districts.map((district) {
+                                return DropdownMenuItem<String>(
+                                  value: district,
+                                  child: Text(district),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedDistrict = value;
+                                });
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 12),
                           _field(
                             "Password",
                             controller: passwordController,
                             isPassword: true,
                             icon: Icons.lock_outline,
                           ),
-
                           const SizedBox(height: 12),
-
                           _field(
                             "Confirm Password",
                             controller: confirmPasswordController,
@@ -170,9 +308,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             isConfirm: true,
                             icon: Icons.lock_outline,
                           ),
-
                           const SizedBox(height: 8),
-
                           Row(
                             children: [
                               Checkbox(
@@ -187,9 +323,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                             ],
                           ),
-
                           const SizedBox(height: 10),
-
                           SizedBox(
                             width: double.infinity,
                             height: 42,
@@ -213,9 +347,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   : const Text("Sign Up"),
                             ),
                           ),
-
                           const SizedBox(height: 16),
-
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
