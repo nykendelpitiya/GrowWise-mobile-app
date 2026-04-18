@@ -173,30 +173,47 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final screenBackground = isDark ? const Color(0xFF0B1220) : Colors.white;
+    final backIconColor = theme.iconTheme.color ?? (isDark ? Colors.white : Colors.black);
+    final backTitleColor =
+        theme.textTheme.bodyLarge?.color ?? (isDark ? Colors.white : Colors.black);
     final borderColor = isDark ? const Color(0xFF355C44) : const Color(0xFFBBF7D0);
     final cardBackground = isDark ? const Color(0xFF111827) : Colors.white;
     final titleColor = isDark ? Colors.white : const Color(0xFF111827);
     final subtitleColor = isDark ? const Color(0xFFCBD5E1) : const Color(0xFF6B7280);
-    final iconBackground = isDark ? const Color(0xFF1F2937) : const Color(0xFFDCFCE7);
 
     if (!isPasswordUser) {
       return Scaffold(
         backgroundColor: screenBackground,
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           titleSpacing: 2,
           toolbarHeight: 58,
-          iconTheme: const IconThemeData(size: 20),
+          title: Row(
+            children: [
+              IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(
+                  Icons.arrow_back_ios_new,
+                  size: 18,
+                  color: backIconColor,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Text(
+                "Change Password",
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: backTitleColor,
+                ),
+              ),
+            ],
+          ),
           backgroundColor: screenBackground,
           foregroundColor: isDark ? Colors.white : Colors.black,
           elevation: 0,
-          title: const Text(
-            "Change Password",
-            style: TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.1,
-            ),
-          ),
         ),
         body: const SafeArea(
           child: Center(
@@ -220,20 +237,35 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     return Scaffold(
       backgroundColor: screenBackground,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         titleSpacing: 2,
         toolbarHeight: 58,
-        iconTheme: const IconThemeData(size: 20),
+        title: Row(
+          children: [
+            IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(
+                Icons.arrow_back_ios_new,
+                size: 18,
+                color: backIconColor,
+              ),
+            ),
+            const SizedBox(width: 4),
+            Text(
+              "Change Password",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: backTitleColor,
+              ),
+            ),
+          ],
+        ),
         backgroundColor: screenBackground,
         foregroundColor: isDark ? Colors.white : Colors.black,
         elevation: 0,
-        title: const Text(
-          "Change Password",
-          style: TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.1,
-          ),
-        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -270,7 +302,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         color: titleColor,
                       ),
                     ),
-                    SizedBox(height: 6),
+                    const SizedBox(height: 6),
                     Text(
                       "Enter your current password and set a new secure password.",
                       style: TextStyle(

@@ -143,6 +143,9 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final screenBackground = isDark ? const Color(0xFF0B1220) : Colors.white;
+    final backIconColor = theme.iconTheme.color ?? (isDark ? Colors.white : Colors.black);
+    final backTitleColor =
+        theme.textTheme.bodyLarge?.color ?? (isDark ? Colors.white : Colors.black);
     final borderColor = isDark ? const Color(0xFF355C44) : const Color(0xFFBBF7D0);
     final cardBackground = isDark ? const Color(0xFF111827) : Colors.white;
     final iconBackground = isDark ? const Color(0xFF1F2937) : const Color(0xFFDCFCE7);
@@ -152,16 +155,31 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
     return Scaffold(
       backgroundColor: screenBackground,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         titleSpacing: 2,
         toolbarHeight: 58,
-        iconTheme: const IconThemeData(size: 20),
-        title: const Text(
-          "Personal Details",
-          style: TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.1,
-          ),
+        title: Row(
+          children: [
+            IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(
+                Icons.arrow_back_ios_new,
+                size: 18,
+                color: backIconColor,
+              ),
+            ),
+            const SizedBox(width: 4),
+            Text(
+              "Personal Details",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: backTitleColor,
+              ),
+            ),
+          ],
         ),
         backgroundColor: screenBackground,
         foregroundColor: isDark ? Colors.white : Colors.black,
