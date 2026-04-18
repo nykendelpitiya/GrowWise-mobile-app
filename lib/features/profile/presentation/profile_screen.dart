@@ -154,7 +154,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _handleBackTap() {
-    Navigator.of(context).maybePop();
+    Navigator.pop(context);
   }
 
   @override
@@ -162,10 +162,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final screenBackground = isDark ? const Color(0xFF0B1220) : Colors.white;
-    final titleColor = isDark ? Colors.white : const Color(0xFF111827);
-    final borderColor = isDark ? const Color(0xFF355C44) : const Color(0xFFBBF7D0);
-    final backIconColor = isDark ? Colors.white : const Color(0xFF111827);
-    final backButtonColor = isDark ? const Color(0xFF111827) : Colors.white;
+    final backIconColor = theme.iconTheme.color ?? (isDark ? Colors.white : Colors.black);
+    final backTitleColor =
+        theme.textTheme.bodyLarge?.color ?? (isDark ? Colors.white : Colors.black);
 
     final themeProvider = Provider.of<ThemeProvider>(context);
 
@@ -178,105 +177,104 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   color: isDark ? Colors.white : const Color(0xFF077530),
                 ),
               )
-            : ListView(
-                padding: const EdgeInsets.fromLTRB(18, 18, 18, 24),
-                children: [
-                  Row(
-                    children: [
-                      Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: _handleBackTap,
-                          borderRadius: BorderRadius.circular(14),
-                          child: Container(
-                            height: 38,
-                            width: 38,
-                            decoration: BoxDecoration(
-                              color: backButtonColor,
-                              borderRadius: BorderRadius.circular(14),
-                              border: Border.all(
-                                color: borderColor,
-                                width: 1.1,
+            : LayoutBuilder(
+                builder: (context, constraints) {
+                  final compact = constraints.maxHeight < 760;
+                  final horizontalPadding = compact ? 16.0 : 18.0;
+                  final topPadding = compact ? 12.0 : 16.0;
+                  final bottomPadding = compact ? 14.0 : 20.0;
+                  final headerGap = compact ? 10.0 : 14.0;
+                  final sectionGap = compact ? 10.0 : 12.0;
+                  final tileGap = compact ? 8.0 : 10.0;
+                  final groupGap = compact ? 12.0 : 16.0;
+
+                  return Padding(
+                    padding: EdgeInsets.fromLTRB(
+                      horizontalPadding,
+                      topPadding,
+                      horizontalPadding,
+                      bottomPadding,
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            IconButton(
+                              onPressed: _handleBackTap,
+                              icon: Icon(
+                                Icons.arrow_back_ios_new,
+                                size: 18,
+                                color: backIconColor,
                               ),
                             ),
-                            child: Icon(
-                              Icons.arrow_back_ios_new_rounded,
-                              size: 16,
-                              color: backIconColor,
+                            const SizedBox(width: 4),
+                            Text(
+                              "Profile",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: backTitleColor,
+                              ),
                             ),
-                          ),
+                          ],
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      Text(
-                        "Profile",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                          color: titleColor,
+                        SizedBox(height: headerGap),
+                        ProfileHeader(
+                          name: fullName,
+                          email: email,
+                          district: district,
+                          imageUrl: imageUrl,
+                          onEditTap: _goToEditProfile,
+                          onImageTap: _onProfileImageTap,
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-
-                  ProfileHeader(
-                    name: fullName,
-                    email: email,
-                    district: district,
-                    imageUrl: imageUrl,
-                    onEditTap: _goToEditProfile,
-                    onImageTap: _onProfileImageTap,
-                  ),
-
-                  const SizedBox(height: 28),
-
-                  const ProfileSectionTitle(title: "Account"),
-                  const SizedBox(height: 12),
-
-                  ProfileMenuTile(
-                    icon: Icons.person_outline_rounded,
-                    title: "Personal Details",
-                    onTap: _goToPersonalDetails,
-                  ),
-                  const SizedBox(height: 12),
-
-                  ProfileMenuTile(
-                    icon: Icons.lock_outline_rounded,
-                    title: "Change Password",
-                    onTap: _goToChangePassword,
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  const ProfileSectionTitle(title: "Settings"),
-                  const SizedBox(height: 12),
-
-                  ProfileSwitchTile(
-                    title: "Dark Mode",
-                    value: themeProvider.isDarkMode,
-                    lightIcon: Icons.light_mode_outlined,
-                    darkIcon: Icons.dark_mode_outlined,
-                    onChanged: (v) {
-                      themeProvider.toggleTheme(v);
-                    },
-                  ),
-                  const SizedBox(height: 12),
-
-                  ProfileSwitchTile(
-                    title: "Notifications",
-                    value: notifications,
-                    lightIcon: Icons.notifications_none_rounded,
-                    darkIcon: Icons.notifications_active_outlined,
-                    onChanged: _updateNotifications,
-                  ),
-
-                  const SizedBox(height: 26),
-
-                  LogoutButton(
-                    onTap: _logout,
-                  ),
-                ],
+                        SizedBox(height: groupGap),
+                        const Align(
+                          alignment: Alignment.centerLeft,
+                          child: ProfileSectionTitle(title: "Account"),
+                        ),
+                        SizedBox(height: sectionGap),
+                        ProfileMenuTile(
+                          icon: Icons.person_outline_rounded,
+                          title: "Personal Details",
+                          onTap: _goToPersonalDetails,
+                        ),
+                        SizedBox(height: tileGap),
+                        ProfileMenuTile(
+                          icon: Icons.lock_outline_rounded,
+                          title: "Change Password",
+                          onTap: _goToChangePassword,
+                        ),
+                        SizedBox(height: groupGap),
+                        const Align(
+                          alignment: Alignment.centerLeft,
+                          child: ProfileSectionTitle(title: "Settings"),
+                        ),
+                        SizedBox(height: sectionGap),
+                        ProfileSwitchTile(
+                          title: "Dark Mode",
+                          value: themeProvider.isDarkMode,
+                          lightIcon: Icons.light_mode_outlined,
+                          darkIcon: Icons.dark_mode_outlined,
+                          onChanged: (v) {
+                            themeProvider.toggleTheme(v);
+                          },
+                        ),
+                        SizedBox(height: tileGap),
+                        ProfileSwitchTile(
+                          title: "Notifications",
+                          value: notifications,
+                          lightIcon: Icons.notifications_none_rounded,
+                          darkIcon: Icons.notifications_active_outlined,
+                          onChanged: _updateNotifications,
+                        ),
+                        const Spacer(),
+                        LogoutButton(
+                          onTap: _logout,
+                        ),
+                      ],
+                    ),
+                  );
+                },
               ),
       ),
     );

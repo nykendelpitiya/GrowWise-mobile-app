@@ -246,11 +246,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final screenBackground = isDark ? const Color(0xFF0B1220) : Colors.white;
+    final backIconColor = theme.iconTheme.color ?? (isDark ? Colors.white : Colors.black);
+    final backTitleColor =
+        theme.textTheme.bodyLarge?.color ?? (isDark ? Colors.white : Colors.black);
     final borderColor = isDark ? const Color(0xFF355C44) : const Color(0xFFBBF7D0);
     final cardBackground = isDark ? const Color(0xFF111827) : Colors.white;
     final titleColor = isDark ? Colors.white : const Color(0xFF111827);
     final subtitleColor = isDark ? const Color(0xFFCBD5E1) : const Color(0xFF6B7280);
     final previewAvatarBackground = isDark ? const Color(0xFF1F2937) : const Color(0xFFDCFCE7);
+    final dropdownMenuColor = isDark ? const Color(0xFF111827) : Colors.white;
+    final dropdownTextColor = isDark ? Colors.white : const Color(0xFF111827);
 
     final previewName =
         _nameController.text.trim().isEmpty ? "User" : _nameController.text.trim();
@@ -259,16 +264,31 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Scaffold(
       backgroundColor: screenBackground,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         titleSpacing: 2,
         toolbarHeight: 58,
-        iconTheme: const IconThemeData(size: 20),
-        title: const Text(
-          "Edit Profile",
-          style: TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.1,
-          ),
+        title: Row(
+          children: [
+            IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(
+                Icons.arrow_back_ios_new,
+                size: 18,
+                color: backIconColor,
+              ),
+            ),
+            const SizedBox(width: 4),
+            Text(
+              "Edit Profile",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: backTitleColor,
+              ),
+            ),
+          ],
         ),
         backgroundColor: screenBackground,
         foregroundColor: isDark ? Colors.white : Colors.black,
@@ -433,6 +453,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     const SizedBox(height: 12),
                     DropdownButtonFormField<String>(
                       value: _selectedDistrict,
+                      style: TextStyle(
+                        color: dropdownTextColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      iconEnabledColor: dropdownTextColor,
                       decoration: _inputDecoration(
                         label: 'District',
                         icon: Icons.location_on_outlined,
@@ -441,7 +467,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           .map(
                             (district) => DropdownMenuItem(
                               value: district,
-                              child: Text(district),
+                              child: Text(
+                                district,
+                                style: TextStyle(color: dropdownTextColor),
+                              ),
                             ),
                           )
                           .toList(),
@@ -451,7 +480,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         });
                       },
                       borderRadius: BorderRadius.circular(16),
-                      dropdownColor: Colors.white,
+                      dropdownColor: dropdownMenuColor,
                     ),
                     const SizedBox(height: 28),
                     SizedBox(
