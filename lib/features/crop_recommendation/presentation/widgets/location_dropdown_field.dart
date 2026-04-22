@@ -17,68 +17,80 @@ class LocationDropdownField extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    final fillColor = isDark ? const Color(0xFF0E1B2B) : const Color(0xFFF8FCF9);
-    final borderColor =
-      isDark ? const Color(0xFF31506B) : const Color(0xFFCBE6D2);
+    final fillColor = isDark
+        ? const Color(0xFF0E1B2B)
+        : const Color(0xFFF9FAFB);
+    final dropdownBg = isDark ? const Color(0xFF102235) : Colors.white;
+    final borderColor = isDark
+        ? const Color(0xFF31506B)
+        : const Color(0xFFDCE7DD);
+    final focusedBorderColor = isDark
+        ? const Color(0xFF4FA36A)
+        : const Color(0xFF077530);
     final textColor = isDark ? Colors.white : const Color(0xFF111827);
-    final hintColor = isDark ? Colors.white54 : const Color(0xFF6B7280);
+    final hintColor = isDark ? Colors.white54 : const Color(0xFF9CA3AF);
+    final iconColor = isDark ? Colors.white70 : const Color(0xFF4B5563);
 
-    return DropdownButtonFormField<String>(
-      value: value,
-      isExpanded: true,
-      menuMaxHeight: 320,
-      borderRadius: BorderRadius.circular(18),
-      icon: Icon(
-        Icons.keyboard_arrow_down_rounded,
-        color: isDark ? Colors.white70 : const Color(0xFF4B5563),
-      ),
-      dropdownColor: fillColor,
-      style: TextStyle(
-        color: textColor,
-        fontSize: 15,
-        fontWeight: FontWeight.w500,
-      ),
-      decoration: InputDecoration(
-        hintText: 'Select location',
-        hintStyle: TextStyle(
-          color: hintColor,
+    return Theme(
+      data: theme.copyWith(canvasColor: dropdownBg),
+      child: DropdownButtonFormField<String>(
+        value: value,
+        isExpanded: true,
+        menuMaxHeight: 320,
+        borderRadius: BorderRadius.circular(24),
+        icon: Icon(Icons.keyboard_arrow_down, color: iconColor, size: 24),
+        dropdownColor: dropdownBg,
+        style: TextStyle(
+          color: textColor,
           fontSize: 15,
+          fontWeight: FontWeight.w500,
         ),
-        filled: true,
-        fillColor: fillColor,
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 18,
-          vertical: 17,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(
-            color: borderColor,
-            width: 1.2,
+        decoration: InputDecoration(
+          hintText: 'Choose district',
+          hintStyle: TextStyle(
+            color: hintColor,
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+          ),
+          filled: true,
+          fillColor: fillColor,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 18,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(24),
+            borderSide: BorderSide(color: borderColor, width: 1.2),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(24),
+            borderSide: BorderSide(color: focusedBorderColor, width: 1.5),
+          ),
+          disabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(24),
+            borderSide: BorderSide(color: borderColor, width: 1.2),
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(24),
+            borderSide: BorderSide(color: borderColor, width: 1.2),
           ),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(
-            color: Color(0xFF077530),
-            width: 1.6,
-          ),
-        ),
-        disabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(
-            color: borderColor,
-            width: 1.2,
-          ),
-        ),
+        items: items.map((location) {
+          return DropdownMenuItem<String>(
+            value: location,
+            child: Text(
+              location,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: textColor,
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          );
+        }).toList(),
+        onChanged: onChanged,
       ),
-      items: items.map((location) {
-        return DropdownMenuItem<String>(
-          value: location,
-          child: Text(location),
-        );
-      }).toList(),
-      onChanged: onChanged,
     );
   }
 }
