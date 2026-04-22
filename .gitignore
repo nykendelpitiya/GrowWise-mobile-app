@@ -37,9 +37,21 @@ migrate_working_dir/
 app.*.symbols
 
 # Obfuscation related
-app.*.map.json
+
 
 # Android Studio will place build artifacts here
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Environment file (contains sensitive API keys)
+.env
+.venv/
+venv/
+__pycache__/
+*.pyc
+# AI Models
+*.h5
+*.tflite
+models/
+Growwise_backend/models/
