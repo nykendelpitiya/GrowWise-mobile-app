@@ -26,10 +26,17 @@ class CropResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const screenBg = Colors.white;
-    const titleColor = Color(0xFF111827);
-    const subtitleColor = Color(0xFF6B7280);
-    const lineColor = Color(0xFFE5E7EB);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final screenBg = isDark ? const Color(0xFF0F1720) : Colors.white;
+    final titleColor =
+        isDark ? const Color(0xFFF3F4F6) : const Color(0xFF111827);
+    final subtitleColor =
+        isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
+    final lineColor =
+        isDark ? const Color(0xFF2B3844) : const Color(0xFFE5E7EB);
+    final surfaceColor =
+        isDark ? const Color(0xFF16212B) : const Color(0xFFF8FAFC);
     const primaryGreen = Color(0xFF077530);
 
     final normalizedLevel = level.trim().toUpperCase();
@@ -39,19 +46,22 @@ class CropResultScreen extends StatelessWidget {
 
     if (normalizedLevel == 'HIGH') {
       levelColor = const Color(0xFF0B6B2E);
-      levelBg = const Color(0xFFEAF7EE);
+      levelBg = isDark ? const Color(0xFF1B2C24) : const Color(0xFFEAF7EE);
     } else if (normalizedLevel == 'MEDIUM') {
       levelColor = const Color(0xFFB7791F);
-      levelBg = const Color(0xFFFFF7E6);
+      levelBg = isDark ? const Color(0xFF32291A) : const Color(0xFFFFF7E6);
     } else {
       levelColor = const Color(0xFFD32F2F);
-      levelBg = const Color(0xFFFFEEEE);
+      levelBg = isDark ? const Color(0xFF351F23) : const Color(0xFFFFEEEE);
     }
 
-    final suitableBg =
-        suitable ? const Color(0xFFEAF7EE) : const Color(0xFFFFEEEE);
-    final suitableBorder =
-        suitable ? const Color(0xFFCFEAD8) : const Color(0xFFF5CACA);
+    final suitableBg = suitable
+        ? (isDark ? const Color(0xFF1B2C24) : const Color(0xFFEAF7EE))
+        : (isDark ? const Color(0xFF351F23) : const Color(0xFFFFEEEE));
+
+    final suitableBorder = suitable
+        ? (isDark ? const Color(0xFF355243) : const Color(0xFFCFEAD8))
+        : (isDark ? const Color(0xFF5A3238) : const Color(0xFFF5CACA));
 
     final Color suitableColor;
     if (!suitable) {
@@ -62,8 +72,15 @@ class CropResultScreen extends StatelessWidget {
       suitableColor = const Color(0xFF0B6B2E);
     }
 
-    final messageBg =
-        suitable ? const Color(0xFFFFF8E8) : const Color(0xFFFFF4E8);
+    final messageBg = suitable
+        ? (isDark ? const Color(0xFF2D2A20) : const Color(0xFFFFF8E8))
+        : (isDark ? const Color(0xFF322820) : const Color(0xFFFFF4E8));
+
+    final iconCircleBg = isDark ? const Color(0xFF111A24) : Colors.white;
+    final outlinedButtonBg =
+        isDark ? const Color(0xFF16212B) : Colors.white;
+    final outlinedButtonBorder =
+        isDark ? const Color(0xFF32414D) : const Color(0xFFD1D5DB);
 
     final String displayMessage;
     if (!suitable) {
@@ -90,7 +107,7 @@ class CropResultScreen extends StatelessWidget {
                     minWidth: 36,
                     minHeight: 36,
                   ),
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.arrow_back_ios_new,
                     size: 18,
                     color: titleColor,
@@ -99,7 +116,7 @@ class CropResultScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              const Text(
+              Text(
                 'Crop Recommendation Result',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -109,7 +126,7 @@ class CropResultScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 6),
-              const Text(
+              Text(
                 'Final result for your selected crop and district.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -120,21 +137,8 @@ class CropResultScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Expanded(
-                child: Container(
-                  width: double.infinity,
+                child: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: lineColor),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Color(0x0A000000),
-                        blurRadius: 10,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
-                  ),
                   child: Column(
                     children: [
                       Row(
@@ -144,6 +148,10 @@ class CropResultScreen extends StatelessWidget {
                               title: 'Crop',
                               value: crop,
                               scaleDownValue: false,
+                              titleColor: subtitleColor,
+                              valueColor: titleColor,
+                              cardColor: surfaceColor,
+                              borderColor: lineColor,
                             ),
                           ),
                           const SizedBox(width: 10),
@@ -152,6 +160,10 @@ class CropResultScreen extends StatelessWidget {
                               title: 'District',
                               value: district,
                               scaleDownValue: true,
+                              titleColor: subtitleColor,
+                              valueColor: titleColor,
+                              cardColor: surfaceColor,
+                              borderColor: lineColor,
                             ),
                           ),
                         ],
@@ -166,6 +178,8 @@ class CropResultScreen extends StatelessWidget {
                               child: _buildPercentageCircle(
                                 percentage: percentage,
                                 primaryGreen: primaryGreen,
+                                valueColor: titleColor,
+                                subtitleColor: subtitleColor,
                               ),
                             ),
                           ),
@@ -185,7 +199,7 @@ class CropResultScreen extends StatelessWidget {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const Text(
+                                  Text(
                                     'Level',
                                     style: TextStyle(
                                       fontSize: 12,
@@ -200,8 +214,9 @@ class CropResultScreen extends StatelessWidget {
                                       normalizedLevel,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                        fontSize:
-                                            normalizedLevel == 'MEDIUM' ? 18 : 22,
+                                        fontSize: normalizedLevel == 'MEDIUM'
+                                            ? 18
+                                            : 22,
                                         fontWeight: FontWeight.w800,
                                         color: levelColor,
                                       ),
@@ -234,7 +249,7 @@ class CropResultScreen extends StatelessWidget {
                               height: 44,
                               width: 44,
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: iconCircleBg,
                                 shape: BoxShape.circle,
                                 border: Border.all(color: suitableBorder),
                               ),
@@ -251,7 +266,7 @@ class CropResultScreen extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
+                                  Text(
                                     'Final Recommendation',
                                     style: TextStyle(
                                       fontSize: 12,
@@ -289,7 +304,7 @@ class CropResultScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
+                            Text(
                               'Message',
                               style: TextStyle(
                                 fontSize: 11,
@@ -302,7 +317,7 @@ class CropResultScreen extends StatelessWidget {
                               displayMessage,
                               maxLines: 3,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 13,
                                 height: 1.35,
                                 fontWeight: FontWeight.w500,
@@ -328,16 +343,16 @@ class CropResultScreen extends StatelessWidget {
                               },
                               style: OutlinedButton.styleFrom(
                                 minimumSize: const Size.fromHeight(42),
-                                side: const BorderSide(
-                                  color: Color(0xFFD1D5DB),
+                                side: BorderSide(
+                                  color: outlinedButtonBorder,
                                   width: 1,
                                 ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(28),
                                 ),
-                                backgroundColor: Colors.white,
+                                backgroundColor: outlinedButtonBg,
                               ),
-                              child: const Text(
+                              child: Text(
                                 'Try Again',
                                 style: TextStyle(
                                   fontSize: 13,
@@ -394,22 +409,26 @@ class CropResultScreen extends StatelessWidget {
     required String title,
     required String value,
     required bool scaleDownValue,
+    required Color titleColor,
+    required Color valueColor,
+    required Color cardColor,
+    required Color borderColor,
   }) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
+        color: cardColor,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFE5E7EB)),
+        border: Border.all(color: borderColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 11,
-              color: Color(0xFF6B7280),
+              color: titleColor,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -423,10 +442,10 @@ class CropResultScreen extends StatelessWidget {
                     fit: BoxFit.scaleDown,
                     child: Text(
                       value,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
-                        color: Color(0xFF111827),
+                        color: valueColor,
                       ),
                     ),
                   )
@@ -434,10 +453,10 @@ class CropResultScreen extends StatelessWidget {
                     value,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF111827),
+                      color: valueColor,
                     ),
                   ),
           ),
@@ -449,6 +468,8 @@ class CropResultScreen extends StatelessWidget {
   Widget _buildPercentageCircle({
     required double percentage,
     required Color primaryGreen,
+    required Color valueColor,
+    required Color subtitleColor,
   }) {
     final progress = (percentage / 100).clamp(0.0, 1.0);
     const circleSize = 128.0;
@@ -474,18 +495,18 @@ class CropResultScreen extends StatelessWidget {
             children: [
               Text(
                 '${percentage.toStringAsFixed(1)}%',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 21,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF111827),
+                  color: valueColor,
                 ),
               ),
               const SizedBox(height: 2),
-              const Text(
+              Text(
                 'Confidence',
                 style: TextStyle(
                   fontSize: 10,
-                  color: Color(0xFF6B7280),
+                  color: subtitleColor,
                 ),
               ),
             ],
