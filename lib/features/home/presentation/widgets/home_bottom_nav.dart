@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:growwise_mobile_app/features/dashboard/presentation/dashboard_screen.dart';
 import 'home_colors.dart';
 import 'package:growwise_mobile_app/features/profile/presentation/profile_screen.dart';
 
@@ -41,7 +42,14 @@ class HomeBottomNav extends StatelessWidget {
             _NavItem(
               icon: Icons.dashboard_outlined,
               label: "Dashboard",
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const DashboardScreen(),
+                  ),
+                );
+              },
             ),
             _NavItem(
               icon: Icons.person_outline,

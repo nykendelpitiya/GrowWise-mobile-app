@@ -6,6 +6,7 @@ import 'package:growwise_mobile_app/core/theme/app_theme.dart';
 import 'package:growwise_mobile_app/core/theme/theme_provider.dart';
 import 'package:growwise_mobile_app/features/splash/presentation/splash_screen.dart';
 import 'package:growwise_mobile_app/firebase_options.dart';
+import 'package:growwise_mobile_app/services/fcm_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,6 +14,12 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  try {
+    await FCMService.init();
+  } catch (e) {
+    debugPrint("FCM init error: $e");
+  }
 
   runApp(
     ChangeNotifierProvider(
