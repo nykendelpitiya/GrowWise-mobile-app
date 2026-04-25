@@ -27,4 +27,32 @@ class ApiService {
       throw Exception("Failed to get prediction: ${response.body}");
     }
   }
+
+  static Future<Map<String, dynamic>> predictCareRecommendation({
+    required String crop,
+    required String district,
+    required String plantingDate,
+    required int quantity,
+  }) async {
+    final url = Uri.parse("$baseUrl/predict-care");
+
+    final response = await http.post(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode({
+        "crop": crop,
+        "district": district,
+        "planting_date": plantingDate,
+        "quantity": quantity,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception("Failed to get care recommendation: ${response.body}");
+    }
+  }
 }

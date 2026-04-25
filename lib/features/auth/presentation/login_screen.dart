@@ -5,6 +5,7 @@ import 'package:growwise_mobile_app/core/constants/app_colors.dart';
 import 'package:growwise_mobile_app/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:growwise_mobile_app/features/auth/presentation/register_screen.dart';
 import 'package:growwise_mobile_app/features/home/presentation/home_screen.dart';
+import 'package:growwise_mobile_app/services/fcm_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -51,6 +52,8 @@ class _LoginScreenState extends State<LoginScreen> {
         email: email,
         password: password,
       );
+
+      await FCMService.saveCurrentToken();
 
       if (!mounted) return;
 
@@ -102,6 +105,8 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       await FirebaseAuth.instance.signInWithCredential(credential);
+
+      await FCMService.saveCurrentToken();
 
       if (!mounted) return;
 

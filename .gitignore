@@ -1,4 +1,4 @@
-# Miscellaneous
+# ================= GENERAL =================
 *.class
 *.log
 *.pyc
@@ -12,18 +12,14 @@
 .swiftpm/
 migrate_working_dir/
 
-# IntelliJ related
+# ================= IDE =================
 *.iml
 *.ipr
 *.iws
 .idea/
+.vscode/
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
-
-# Flutter/Dart/Pub related
+# ================= FLUTTER =================
 **/doc/api/
 **/ios/Flutter/.last_build_id
 .dart_tool/
@@ -33,25 +29,43 @@ migrate_working_dir/
 /build/
 /coverage/
 
-# Symbolication related
-app.*.symbols
-
-# Obfuscation related
-
-
-# Android Studio will place build artifacts here
+# ================= ANDROID =================
 /android/app/debug
 /android/app/profile
 /android/app/release
 
-# Environment file (contains sensitive API keys)
-.env
-.venv/
-venv/
+# ================= PYTHON =================
 __pycache__/
 *.pyc
-# AI Models
+*.pyo
+*.pyd
+*.sqlite3
+*.db
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# ================= ENV =================
+.env
+
+# ================= FIREBASE / SECRETS 🔥 =================
+# ONLY ignore firebase admin key
+Growwise_backend/*firebase-adminsdk*.json
+
+# ================= AI MODELS =================
 *.h5
 *.tflite
+*.pt
+*.pkl
+
+# Ignore full models folder (heavy files)
 models/
 Growwise_backend/models/
+
+# ================= DATASETS =================
+*.csv
+
+# ================= OS FILES =================
+Thumbs.db

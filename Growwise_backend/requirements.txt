@@ -3,6 +3,9 @@ uvicorn
 python-dotenv
 tensorflow
 pandas
+numpy
 scikit-learn
 joblib
 requests
+python-multipart
+apscheduler
