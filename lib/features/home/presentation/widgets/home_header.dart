@@ -5,7 +5,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:growwise_mobile_app/features/notifications/presentation/notification_screen.dart';
 
 class HomeHeader extends StatelessWidget {
-  const HomeHeader({super.key});
+  final Color? titleColor;
+  final Color? subtitleColor;
+
+  const HomeHeader({
+    super.key,
+    this.titleColor,
+    this.subtitleColor,
+  });
 
   /// 🔥 GET UNREAD COUNT
   Stream<int> getUnreadCount() {
@@ -23,26 +30,43 @@ class HomeHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    /// 🔥 GET USER NAME
+    final user = FirebaseAuth.instance.currentUser;
+
+    final fullName =
+        user?.displayName ?? user?.email?.split('@').first ?? "User";
+
+    final firstName = fullName.trim().split(' ').first;
+
+    /// 🔥 AUTO DARK MODE COLORS (fallback)
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final finalTitleColor =
+        titleColor ?? (isDark ? Colors.white : kTextDark);
+
+    final finalSubtitleColor =
+        subtitleColor ?? (isDark ? Colors.white70 : kTextLight);
+
     return Row(
       children: [
-        const Expanded(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Hello, Nusith",
+                "Hello, $firstName",
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w700,
-                  color: kTextDark,
+                  color: finalTitleColor,
                 ),
               ),
-              SizedBox(height: 4),
+              const SizedBox(height: 4),
               Text(
                 "Welcome back to GrowWise",
                 style: TextStyle(
                   fontSize: 13,
-                  color: kTextLight,
+                  color: finalSubtitleColor,
                 ),
               ),
             ],
@@ -98,16 +122,12 @@ class HomeHeader extends StatelessWidget {
 
                   /// 🔴 RED DOT (ONLY IF UNREAD > 0)
                   if (count > 0)
-                    Positioned(
+                    const Positioned(
                       right: 4,
                       top: 4,
-                      child: Container(
-                        height: 10,
-                        width: 10,
-                        decoration: const BoxDecoration(
-                          color: Colors.red,
-                          shape: BoxShape.circle,
-                        ),
+                      child: CircleAvatar(
+                        radius: 5,
+                        backgroundColor: Colors.red,
                       ),
                     ),
                 ],

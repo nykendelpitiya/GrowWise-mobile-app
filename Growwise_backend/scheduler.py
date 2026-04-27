@@ -48,6 +48,13 @@ def send_due_notifications():
                         title=title,
                         body=body,
                     ),
+                    data={
+                        "notificationId": str(notification_id),
+                        "type": str(data.get("type", "general")),
+                        "category": str(data.get("category", "General")),
+                        "crop": str(data.get("crop", "")),
+                        "district": str(data.get("district", "")),
+                    },
                     token=token,
                 )
 
@@ -56,7 +63,7 @@ def send_due_notifications():
                 db.collection("notifications").document(notification_id).update({
                     "sent": True,
                     "sentAt": datetime.now(timezone.utc),
-                    "response": response,
+                    "response": str(response),
                 })
 
                 print("✅ Due notification sent:", user_id, title)
@@ -75,23 +82,17 @@ def send_due_notifications():
 
 scheduler = BackgroundScheduler()
 
-# ✅ Testing: check every 1 minute
-scheduler.add_job(
-    send_due_notifications,
-    trigger="interval",
-    minutes=1,
-)
-
-# ✅ Later production option:
-# scheduler.add_job(
-#     send_due_notifications,
-#     trigger="interval",
-#     minutes=5,
-# )
-
 
 def start_scheduler():
     if not scheduler.running:
+        scheduler.add_job(
+            send_due_notifications,
+            trigger="interval",
+            minutes=1,
+            id="send_due_notifications",
+            replace_existing=True,
+        )
+
         scheduler.start()
         print("🚀 Scheduler started...")
     else:

@@ -120,6 +120,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         'fullName': name,
         'email': email,
         'district': selectedDistrict,
+        'districtLower': selectedDistrict!.toLowerCase(),
         'notifications': true,
         'imageUrl': '',
         'createdAt': FieldValue.serverTimestamp(),
