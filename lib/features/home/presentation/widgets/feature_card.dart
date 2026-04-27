@@ -17,6 +17,19 @@ class FeatureCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final cardColor = isDark ? const Color(0xFF16212B) : Colors.white;
+    final borderColor =
+        isDark ? const Color(0xFF2F4F3E) : const Color(0xFFBBF7D0);
+    final iconBgColor =
+        isDark ? const Color(0xFF1F3A2C) : const Color(0xFFDCFCE7);
+    final titleColor = isDark ? Colors.white : kTextDark;
+    final subtitleColor =
+        isDark ? const Color(0xFF94A3B8) : kTextLight;
+    final arrowColor =
+        isDark ? const Color(0xFF94A3B8) : kTextLight;
+
     return InkWell(
       borderRadius: BorderRadius.circular(18),
       onTap: onTap,
@@ -24,10 +37,10 @@ class FeatureCard extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: cardColor,
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
-            color: const Color(0xFFBBF7D0),
+            color: borderColor,
             width: 1.2,
           ),
         ),
@@ -37,12 +50,12 @@ class FeatureCard extends StatelessWidget {
               height: 46,
               width: 46,
               decoration: BoxDecoration(
-                color: const Color(0xFFDCFCE7),
+                color: iconBgColor,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Center(
                 child: SizedBox(
-                  width: 36, 
+                  width: 36,
                   height: 36,
                   child: FittedBox(
                     fit: BoxFit.contain,
@@ -61,28 +74,28 @@ class FeatureCard extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: kTextDark,
+                      color: titleColor,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     subtitle,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
-                      color: kTextLight,
+                      color: subtitleColor,
                       height: 1.4,
                     ),
                   ),
                 ],
               ),
             ),
-            const Icon(
+            Icon(
               Icons.arrow_forward_ios,
               size: 16,
-              color: kTextLight,
+              color: arrowColor,
             ),
           ],
         ),

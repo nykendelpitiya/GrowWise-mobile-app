@@ -102,6 +102,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final screenBg = isDark ? const Color(0xFF071426) : Colors.white;
     final titleColor = isDark ? Colors.white : kTextDark;
+    final subtitleColor =
+        isDark ? const Color(0xFF94A3B8) : const Color(0xFF6B7280);
     final loaderBg = isDark ? const Color(0xFF16212B) : const Color(0xFFFFF8E8);
 
     return Scaffold(
@@ -118,10 +120,13 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const HomeHeader(),
+                  HomeHeader(
+                    titleColor: titleColor,
+                    subtitleColor: subtitleColor,
+                  ),
                   const SizedBox(height: 12),
 
-                  const WeatherSummaryCard(),
+                  WeatherSummaryCard(city: _city),
                   const SizedBox(height: 12),
 
                   _todayTipFuture == null

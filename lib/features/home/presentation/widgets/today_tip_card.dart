@@ -23,15 +23,15 @@ class TodayTipCard extends StatelessWidget {
 
     final borderColor = isRain
         ? (isDark ? const Color(0xFFEF4444) : const Color(0xFFFCA5A5))
-        : (isDark ? const Color(0xFF8B5A2B) : const Color(0xFFFDBA74));
+        : (isDark ? const Color(0xFFB87333) : const Color(0xFFFDBA74));
 
     final titleColor = isRain
-        ? (isDark ? const Color(0xFFFECACA) : const Color(0xFF991B1B))
-        : (isDark ? const Color(0xFFFFD8A8) : const Color(0xFF9A3412));
+        ? (isDark ? const Color(0xFFFFD4D4) : const Color(0xFF991B1B))
+        : (isDark ? const Color(0xFFFFE0B2) : const Color(0xFF9A3412));
 
     final textColor = isRain
-        ? (isDark ? const Color(0xFFFEE2E2) : const Color(0xFF7F1D1D))
-        : (isDark ? const Color(0xFFFDE68A) : const Color(0xFF7C2D12));
+        ? (isDark ? const Color(0xFFFFE4E6) : const Color(0xFF7F1D1D))
+        : (isDark ? const Color(0xFFFFF3C4) : const Color(0xFF7C2D12));
 
     final iconColor =
         isRain ? const Color(0xFFEF4444) : const Color(0xFFF97316);
@@ -56,7 +56,7 @@ class TodayTipCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: iconColor.withOpacity(0.15),
+              color: iconColor.withOpacity(isDark ? 0.22 : 0.15),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -74,7 +74,7 @@ class TodayTipCard extends StatelessWidget {
                   isRain ? "Weather Alert" : title,
                   style: TextStyle(
                     fontSize: 14,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w800,
                     color: titleColor,
                   ),
                 ),
@@ -86,6 +86,7 @@ class TodayTipCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12.5,
                     height: 1.4,
+                    fontWeight: FontWeight.w500,
                     color: textColor,
                   ),
                 ),

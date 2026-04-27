@@ -29,6 +29,7 @@ class ApiService {
   }
 
   static Future<Map<String, dynamic>> predictCareRecommendation({
+    required String userId,
     required String crop,
     required String district,
     required String plantingDate,
@@ -42,6 +43,7 @@ class ApiService {
         "Content-Type": "application/json",
       },
       body: jsonEncode({
+        "user_id": userId,
         "crop": crop,
         "district": district,
         "planting_date": plantingDate,

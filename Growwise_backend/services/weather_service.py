@@ -4,7 +4,6 @@ from pathlib import Path
 import requests
 from dotenv import load_dotenv
 
-# .env file eka explicitly load karanawa
 BASE_DIR = Path(__file__).resolve().parent.parent
 ENV_PATH = BASE_DIR / ".env"
 load_dotenv(dotenv_path=ENV_PATH)
@@ -22,7 +21,7 @@ def get_weather(city: str):
     city_clean = city.strip()
 
     url = (
-        f"https://api.openweathermap.org/data/2.5/weather"
+        "https://api.openweathermap.org/data/2.5/weather"
         f"?q={city_clean},LK&appid={api_key}&units=metric"
     )
 
@@ -42,9 +41,10 @@ def get_weather(city: str):
 
         return {
             "city": data.get("name", city_clean),
-            "temperature": round(float(data["main"]["temp"]), 2),
-            "humidity": round(float(data["main"]["humidity"]), 2),
+            "temperature": round(float(data["main"]["temp"]), 1),
+            "humidity": round(float(data["main"]["humidity"]), 1),
             "condition": data["weather"][0]["main"],
+            "ph": 6.5,
         }
 
     except requests.exceptions.Timeout:

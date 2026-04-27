@@ -23,6 +23,20 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   static const Color primaryGreen = Color(0xFF077530);
 
+  bool _isDue(Map<String, dynamic> data) {
+    final scheduledAt = data['scheduledAt'];
+
+    if (scheduledAt is Timestamp) {
+      return !scheduledAt.toDate().isAfter(DateTime.now());
+    }
+
+    return true;
+  }
+
+  dynamic _displayTimestamp(Map<String, dynamic> data) {
+    return data['sentAt'] ?? data['createdAt'] ?? data['scheduledAt'];
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
@@ -63,7 +77,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                           return _emptyState(
                             icon: Icons.error_outline_rounded,
                             title: "Failed to load notifications",
-                            subtitle: "Please try again later.",
+                            subtitle: snapshot.error.toString(),
                             color: subtitleColor,
                           );
                         }
@@ -77,14 +91,17 @@ class _NotificationScreenState extends State<NotificationScreen> {
                           );
                         }
 
-                        final allDocs = snapshot.data?.docs ?? [];
+                        final allDocs = (snapshot.data?.docs ?? []).where((doc) {
+                          final data = doc.data() as Map<String, dynamic>;
+                          return _isDue(data);
+                        }).toList();
 
                         allDocs.sort((a, b) {
                           final aData = a.data() as Map<String, dynamic>;
                           final bData = b.data() as Map<String, dynamic>;
 
-                          final aTime = aData['createdAt'];
-                          final bTime = bData['createdAt'];
+                          final aTime = _displayTimestamp(aData);
+                          final bTime = _displayTimestamp(bData);
 
                           if (aTime is Timestamp && bTime is Timestamp) {
                             return bTime.compareTo(aTime);
@@ -115,7 +132,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             icon: Icons.notifications_none_rounded,
                             title: "No notifications yet",
                             subtitle:
-                                "Your plant care reminders will appear here.",
+                                "Only due plant care reminders will appear here.",
                             color: subtitleColor,
                           );
                         }
@@ -207,7 +224,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   .where("isRead", isEqualTo: false)
                   .snapshots(),
               builder: (context, snapshot) {
-                final unreadCount = snapshot.data?.docs.length ?? 0;
+                final unreadCount = (snapshot.data?.docs ?? []).where((doc) {
+                  final data = doc.data() as Map<String, dynamic>;
+                  return _isDue(data);
+                }).length;
 
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -251,10 +271,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 color: Colors.white,
                 surfaceTintColor: Colors.white,
                 elevation: 6,
-                icon: Icon(
-                  Icons.more_vert_rounded,
-                  color: titleColor,
-                ),
+                icon: Icon(Icons.more_vert_rounded, color: titleColor),
                 onSelected: (value) async {
                   if (value == "all") {
                     setState(() => selectedStatus = "All");
@@ -316,7 +333,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             size: 18, color: Colors.black87),
                         SizedBox(width: 8),
                         Text(
-                          "Clear all notifications",
+                          "Clear due notifications",
                           style: TextStyle(color: Colors.black),
                         ),
                       ],
@@ -352,8 +369,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 color: selected ? primaryGreen : Colors.white,
                 borderRadius: BorderRadius.circular(18),
                 border: Border.all(
-                  color:
-                      selected ? primaryGreen : const Color(0xFFE5E7EB),
+                  color: selected ? primaryGreen : const Color(0xFFE5E7EB),
                 ),
               ),
               child: Text(
@@ -382,7 +398,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     final title = data['title']?.toString() ?? 'GrowWise Alert';
     final message =
         data['body']?.toString() ?? data['message']?.toString() ?? '';
-    final timestamp = data['createdAt'];
+    final timestamp = _displayTimestamp(data);
     final isRead = data['isRead'] == true;
     final isImportant = data['isImportant'] == true ||
         data['important'] == true ||
@@ -605,7 +621,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
     for (final doc in docs) {
       final data = doc.data() as Map<String, dynamic>;
-      final timestamp = data['createdAt'];
+      final timestamp = _displayTimestamp(data);
 
       if (timestamp is Timestamp) {
         final dt = timestamp.toDate();
@@ -690,7 +706,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
     final batch = FirebaseFirestore.instance.batch();
 
     for (final doc in snapshot.docs) {
-      batch.update(doc.reference, {"isRead": true});
+      final data = doc.data();
+      if (_isDue(data)) {
+        batch.update(doc.reference, {"isRead": true});
+      }
     }
 
     await batch.commit();
@@ -705,7 +724,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
     final batch = FirebaseFirestore.instance.batch();
 
     for (final doc in snapshot.docs) {
-      batch.delete(doc.reference);
+      final data = doc.data();
+      if (_isDue(data)) {
+        batch.delete(doc.reference);
+      }
     }
 
     await batch.commit();
@@ -780,11 +802,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   String _formatTime(dynamic timestamp) {
     if (timestamp is Timestamp) {
-      final dt = timestamp.toDate();
+      final dt = timestamp.toDate().toLocal();
       final now = DateTime.now();
       final diff = now.difference(dt);
 
-      if (diff.inMinutes < 1) return "Just now";
+      if (diff.inSeconds < 60) return "Just now";
       if (diff.inMinutes < 60) return "${diff.inMinutes} min ago";
       if (diff.inHours < 24) return "${diff.inHours} hr ago";
 

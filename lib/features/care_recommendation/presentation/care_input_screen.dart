@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:growwise_mobile_app/services/api_service.dart';
 import 'package:growwise_mobile_app/services/care_store.dart';
 import 'package:growwise_mobile_app/features/dashboard/presentation/dashboard_screen.dart';
@@ -71,26 +72,6 @@ class _CareInputScreenState extends State<CareInputScreen> {
       initialDate: selectedPlantingDate ?? now,
       firstDate: DateTime(now.year - 5),
       lastDate: DateTime(now.year + 5),
-      builder: (context, child) {
-        final isDark = Theme.of(context).brightness == Brightness.dark;
-
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: isDark
-                ? const ColorScheme.dark(
-                    primary: Color(0xFF7ED957),
-                    surface: Color(0xFF16212B),
-                    onSurface: Colors.white,
-                  )
-                : const ColorScheme.light(
-                    primary: Color(0xFF077530),
-                    surface: Colors.white,
-                    onSurface: Color(0xFF111827),
-                  ),
-          ),
-          child: child!,
-        );
-      },
     );
 
     if (pickedDate != null) {
@@ -103,7 +84,18 @@ class _CareInputScreenState extends State<CareInputScreen> {
   Future<void> _handleSave() async {
     FocusScope.of(context).unfocus();
 
+    final user = FirebaseAuth.instance.currentUser;
     final quantity = int.tryParse(quantityController.text.trim());
+
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please login again'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+      return;
+    }
 
     if (selectedCrop == null ||
         selectedDistrict == null ||
@@ -125,6 +117,7 @@ class _CareInputScreenState extends State<CareInputScreen> {
 
     try {
       final result = await ApiService.predictCareRecommendation(
+        userId: user.uid,
         crop: selectedCrop!,
         district: selectedDistrict!,
         plantingDate: DateFormat('yyyy-MM-dd').format(selectedPlantingDate!),
@@ -241,15 +234,6 @@ class _CareInputScreenState extends State<CareInputScreen> {
                     color: cardBorder,
                     width: 1.2,
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: isDark
-                          ? Colors.black.withOpacity(0.18)
-                          : const Color(0x14000000),
-                      blurRadius: 14,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
