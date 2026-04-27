@@ -5,8 +5,7 @@ class CareStore {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   static final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // ✅ PRODUCTION MODE
-  // false = real schedule times
+ 
   static const bool testMode = false;
 
   static String get _uid {
@@ -66,7 +65,7 @@ class CareStore {
     final now = DateTime.now();
     final batch = _firestore.batch();
 
-    // 💧 WATER reminders - next 3 days at 8:00 AM
+    
     for (int i = 0; i < 3; i++) {
       final waterTime = DateTime(now.year, now.month, now.day + i, 8, 0);
 
@@ -89,7 +88,7 @@ class CareStore {
       });
     }
 
-    // 🌿 FERTILIZER reminder - after 7 days at 8:00 AM
+    
     final fertilizerTime = DateTime(now.year, now.month, now.day + 7, 8, 0);
 
     final fertilizerDoc = _notificationCollection.doc();
@@ -110,7 +109,6 @@ class CareStore {
       'createdAt': FieldValue.serverTimestamp(),
     });
 
-    // 🌤 WEATHER reminders - next 3 days at 7:30 AM
     for (int i = 0; i < 3; i++) {
       final weatherTime = DateTime(now.year, now.month, now.day + i, 7, 30);
 

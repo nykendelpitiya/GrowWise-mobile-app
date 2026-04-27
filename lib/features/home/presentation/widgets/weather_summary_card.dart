@@ -111,9 +111,15 @@ class _WeatherSummaryCardState extends State<WeatherSummaryCard> {
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 500),
-      height: 124,
+
+     
+      height: 140,
+
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+
+      
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: getWeatherGradient(condition),
@@ -123,8 +129,8 @@ class _WeatherSummaryCardState extends State<WeatherSummaryCard> {
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
-            color: getWeatherGradient(condition).last.withOpacity(0.22),
-            blurRadius: 14,
+            color: getWeatherGradient(condition).last.withOpacity(0.25),
+            blurRadius: 16,
             offset: const Offset(0, 6),
           ),
         ],
@@ -132,8 +138,8 @@ class _WeatherSummaryCardState extends State<WeatherSummaryCard> {
       child: isLoading
           ? const Center(
               child: SizedBox(
-                height: 20,
-                width: 20,
+                height: 22,
+                width: 22,
                 child: CircularProgressIndicator(
                   color: Colors.white,
                   strokeWidth: 2,
@@ -168,7 +174,8 @@ class _WeatherSummaryCardState extends State<WeatherSummaryCard> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 10),
+
                       Row(
                         children: [
                           TweenAnimationBuilder<double>(
@@ -181,36 +188,37 @@ class _WeatherSummaryCardState extends State<WeatherSummaryCard> {
                                     ? "--°C"
                                     : "${value.toStringAsFixed(1)}°C",
                                 style: const TextStyle(
-                                  fontSize: 31,
+                                  fontSize: 32,
                                   fontWeight: FontWeight.w800,
                                   color: Colors.white,
-                                  height: 1,
                                 ),
                               );
                             },
                           ),
-                          const SizedBox(width: 8),
+                          const SizedBox(width: 10),
                           Container(
-                            height: 32,
-                            width: 32,
+                            height: 34,
+                            width: 34,
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.22),
+                              color: Colors.white.withOpacity(0.25),
                               shape: BoxShape.circle,
                             ),
                             child: Icon(
                               getWeatherIcon(condition),
                               color: Colors.white,
-                              size: 18,
+                              size: 20,
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 6),
+
+                      const SizedBox(height: 8),
+
                       Text(
                         getConditionText(condition),
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 12,
+                          fontSize: 13,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -218,24 +226,25 @@ class _WeatherSummaryCardState extends State<WeatherSummaryCard> {
                   ),
                 ),
 
-                const SizedBox(width: 10),
+                const SizedBox(width: 12),
 
+                
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(17),
+                  borderRadius: BorderRadius.circular(18),
                   child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                    filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
                     child: Container(
-                      width: 82,
-                      height: 86,
+                      width: 88,
+                      height: 92,
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 8,
+                        horizontal: 10,
+                        vertical: 10,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.18),
-                        borderRadius: BorderRadius.circular(17),
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(18),
                         border: Border.all(
-                          color: Colors.white.withOpacity(0.25),
+                          color: Colors.white.withOpacity(0.3),
                           width: 1,
                         ),
                       ),
@@ -248,8 +257,8 @@ class _WeatherSummaryCardState extends State<WeatherSummaryCard> {
                           ),
                           Container(
                             height: 1,
-                            width: 48,
-                            color: Colors.white.withOpacity(0.25),
+                            width: 50,
+                            color: Colors.white.withOpacity(0.3),
                           ),
                           _miniInfoRow(
                             icon: Icons.eco_rounded,

@@ -12,68 +12,153 @@ class HomeBottomNav extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return SafeArea(
-      minimum: const EdgeInsets.fromLTRB(18, 0, 18, 12),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(30),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-          child: Container(
-            height: 62,
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            decoration: BoxDecoration(
-              color: isDark
-                  ? Colors.white.withOpacity(0.05)
-                  : Colors.white.withOpacity(0.85),
-              borderRadius: BorderRadius.circular(30),
-              border: Border.all(
-                color: isDark
-                    ? const Color(0xFF2A3A45)
-                    : const Color(0xFFE5E7EB),
+      minimum: const EdgeInsets.fromLTRB(18, 0, 18, 10),
+      child: SizedBox(
+        height: 78,
+        child: Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(32),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                child: Container(
+                  height: 58,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? const Color(0xFF16212B).withOpacity(0.92)
+                        : Colors.white.withOpacity(0.92),
+                    borderRadius: BorderRadius.circular(32),
+                    border: Border.all(
+                      color: isDark
+                          ? const Color(0xFF2A3A45)
+                          : const Color(0xFFE5E7EB),
+                      width: 1,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(isDark ? 0.32 : 0.10),
+                        blurRadius: 18,
+                        offset: const Offset(0, 7),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const SizedBox(width: 74),
+                      _NavItem(
+                        icon: Icons.dashboard_rounded,
+                        label: "Dashboard",
+                        active: false,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const DashboardScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                      _NavItem(
+                        icon: Icons.person_rounded,
+                        label: "Profile",
+                        active: false,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const ProfileScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(isDark ? 0.35 : 0.08),
-                  blurRadius: 20,
-                  offset: const Offset(0, 6),
-                ),
-              ],
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _NavItem(
-                  icon: Icons.home_rounded,
-                  label: "Home",
-                  active: true,
-                  onTap: () {},
-                ),
-                _NavItem(
-                  icon: Icons.dashboard_rounded,
-                  label: "Dashboard",
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const DashboardScreen(),
-                      ),
-                    );
-                  },
-                ),
-                _NavItem(
-                  icon: Icons.person_rounded,
-                  label: "Profile",
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const ProfileScreen(),
-                      ),
-                    );
-                  },
-                ),
-              ],
+
+            Positioned(
+              left: 12,
+              top: 0,
+              child: _ActiveHomeItem(
+                onTap: () {},
+              ),
             ),
-          ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ActiveHomeItem extends StatelessWidget {
+  final VoidCallback? onTap;
+
+  const _ActiveHomeItem({
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: SizedBox(
+        width: 86,
+        height: 76,
+        child: Column(
+          children: [
+            Container(
+              height: 54,
+              width: 54,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+                border: Border.all(
+                  color: const Color(0xFFDCFCE7),
+                  width: 3,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF22C55E).withOpacity(0.28),
+                    blurRadius: 16,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
+              ),
+              child: Container(
+                margin: const EdgeInsets.all(7),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    colors: [
+                      Color(0xFF22C55E),
+                      Color(0xFF16A34A),
+                      Color(0xFF077530),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                child: const Icon(
+                  Icons.home_rounded,
+                  color: Colors.white,
+                  size: 23,
+                ),
+              ),
+            ),
+            const SizedBox(height: 3),
+            const Text(
+              "Home",
+              style: TextStyle(
+                fontSize: 10.5,
+                fontWeight: FontWeight.w800,
+                color: kPrimaryGreenDark,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -98,64 +183,13 @@ class _NavItem extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final inactiveColor =
-        isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569);
-
-    if (active) {
-      return GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          curve: Curves.easeOut,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFF22C55E), Color(0xFF16A34A)],
-            ),
-            borderRadius: BorderRadius.circular(22),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xFF22C55E).withOpacity(0.5),
-                blurRadius: 18,
-                offset: const Offset(0, 6),
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              TweenAnimationBuilder<double>(
-                tween: Tween(begin: 1.0, end: 1.15),
-                duration: const Duration(milliseconds: 250),
-                builder: (context, scale, child) {
-                  return Transform.scale(
-                    scale: scale,
-                    child: child,
-                  );
-                },
-                child: const Icon(
-                  Icons.home_rounded,
-                  size: 20,
-                  color: Colors.white,
-                ),
-              ),
-              const SizedBox(width: 6),
-              Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
+        isDark ? const Color(0xFF94A3B8) : const Color(0xFF94A3B8);
 
     return GestureDetector(
       onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: SizedBox(
+        width: 74,
+        height: 54,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -164,12 +198,14 @@ class _NavItem extends StatelessWidget {
               size: 22,
               color: inactiveColor,
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: 3),
             Text(
               label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.w500,
+                fontSize: 9.5,
+                fontWeight: FontWeight.w600,
                 color: inactiveColor,
               ),
             ),
