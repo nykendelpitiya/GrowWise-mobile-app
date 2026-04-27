@@ -57,4 +57,24 @@ class ApiService {
       throw Exception("Failed to get care recommendation: ${response.body}");
     }
   }
+
+  static Future<Map<String, dynamic>> getTodayTip({
+    required String city,
+    required String userId,
+  }) async {
+    final url = Uri.parse("$baseUrl/today-tip/$city?user_id=$userId");
+
+    final response = await http.get(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception("Failed to get today tip: ${response.body}");
+    }
+  }
 }

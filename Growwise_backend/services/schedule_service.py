@@ -32,24 +32,32 @@ def create_schedule_notifications(
     crop_clean = crop.strip()
     district_clean = district.strip()
 
+    now = datetime.now(timezone.utc)
     plant_date = _to_utc_datetime(planting_date).date()
-    today = datetime.now(timezone.utc).date()
+    today = now.date()
 
-    # Past planting date නම් today ඉඳන් schedule start
+    
     start_date = max(plant_date, today)
 
-    base_date = datetime.combine(
-        start_date,
-        time(hour=8, minute=0),
-        tzinfo=timezone.utc,
+    
+    if start_date == today:
+        base_date = now + timedelta(minutes=5)
+    else:
+        base_date = datetime.combine(
+            start_date,
+            time(hour=8, minute=0),
+            tzinfo=timezone.utc,
+        )
+
+    schedule_id = (
+        f"{user_id}_{crop_clean.lower().replace(' ', '_')}_"
+        f"{district_clean.lower().replace(' ', '_')}_{str(planting_date)}"
     )
 
-    # Duplicate stop
+   
     existing = (
         db.collection("notifications")
-        .where("userId", "==", user_id)
-        .where("crop", "==", crop_clean)
-        .where("plantingDate", "==", str(planting_date))
+        .where("scheduleId", "==", schedule_id)
         .limit(1)
         .stream()
     )
@@ -58,18 +66,19 @@ def create_schedule_notifications(
         return {
             "success": True,
             "message": "Notifications already created for this schedule",
+            "schedule_id": schedule_id,
         }
 
     batch = db.batch()
-    now = datetime.now(timezone.utc)
     created_count = 0
 
-    # Water reminders - next 30 days
+   
     for day in range(30):
         scheduled_at = base_date + timedelta(days=day)
 
         doc_ref = db.collection("notifications").document()
         batch.set(doc_ref, {
+            "scheduleId": schedule_id,
             "userId": user_id,
             "title": "Water Reminder",
             "message": (
@@ -90,7 +99,7 @@ def create_schedule_notifications(
         })
         created_count += 1
 
-    # Fertilizer reminders
+   
     splits_per_year = max(1, int(splits_per_year))
     interval_days = max(1, 365 // splits_per_year)
 
@@ -103,6 +112,7 @@ def create_schedule_notifications(
 
         doc_ref = db.collection("notifications").document()
         batch.set(doc_ref, {
+            "scheduleId": schedule_id,
             "userId": user_id,
             "title": "Fertilizer Reminder",
             "message": (
@@ -129,5 +139,7 @@ def create_schedule_notifications(
         "success": True,
         "message": "Schedule notifications created successfully",
         "created_count": created_count,
+        "schedule_id": schedule_id,
         "schedule_start_date": str(start_date),
+        "first_notification_at": base_date.isoformat(),
     }

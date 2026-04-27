@@ -48,7 +48,7 @@ class FCMService {
     }
   }
 
-  /// 🔥 Call this after login success also
+  
   static Future<void> saveCurrentToken() async {
     try {
       final token = await _messaging.getToken();

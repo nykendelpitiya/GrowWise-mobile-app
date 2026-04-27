@@ -160,7 +160,7 @@ class _Step2State extends State<Step2> {
           children: [
             const SizedBox(height: 12),
 
-            /// 🔥 CENTER TITLE + SUBTITLE
+            
             AnimatedSlide(
               duration: const Duration(milliseconds: 550),
               curve: Curves.easeOutCubic,
@@ -213,7 +213,7 @@ class _Step2State extends State<Step2> {
 
             const SizedBox(height: 18),
 
-            /// 🔹 CROPS TITLE
+            
             const Center(
               child: Text(
                 "Supported Crops",
@@ -227,7 +227,7 @@ class _Step2State extends State<Step2> {
 
             const SizedBox(height: 12),
 
-            /// 🔹 CROPS GRID
+           
             Center(
               child: Wrap(
                 alignment: WrapAlignment.center,

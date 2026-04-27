@@ -14,24 +14,29 @@ class TodayTipCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final isRain = alert.toLowerCase() == "rain";
 
-    final bgColor = isRain
-        ? (isDark ? const Color(0xFF3B1F1F) : const Color(0xFFFFEBEE))
-        : (isDark ? const Color(0xFF2A1F14) : const Color(0xFFFFF7ED));
+    final gradientColors = isRain
+        ? const [
+            Color(0xFFFFF1F2),
+            Color(0xFFFFE4E6),
+          ]
+        : const [
+            Color(0xFFFFF7ED),
+            Color(0xFFFFEDD5),
+          ];
 
     final borderColor = isRain
-        ? (isDark ? const Color(0xFFEF4444) : const Color(0xFFFCA5A5))
-        : (isDark ? const Color(0xFFB87333) : const Color(0xFFFDBA74));
+        ? const Color(0xFFFCA5A5)
+        : const Color(0xFFFDBA74);
 
     final titleColor = isRain
-        ? (isDark ? const Color(0xFFFFD4D4) : const Color(0xFF991B1B))
-        : (isDark ? const Color(0xFFFFE0B2) : const Color(0xFF9A3412));
+        ? const Color(0xFF991B1B)
+        : const Color(0xFF9A3412);
 
     final textColor = isRain
-        ? (isDark ? const Color(0xFFFFE4E6) : const Color(0xFF7F1D1D))
-        : (isDark ? const Color(0xFFFFF3C4) : const Color(0xFF7C2D12));
+        ? const Color(0xFF7F1D1D)
+        : const Color(0xFF7C2D12);
 
     final iconColor =
         isRain ? const Color(0xFFEF4444) : const Color(0xFFF97316);
@@ -41,22 +46,31 @@ class TodayTipCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 14,
-        vertical: 12,
-      ),
+      height: 80,
+      padding: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
-        color: bgColor,
+        gradient: LinearGradient(
+          colors: gradientColors,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: borderColor, width: 1),
+        border: Border.all(color: borderColor, width: 1.2),
+        boxShadow: [
+          BoxShadow(
+            color: iconColor.withOpacity(0.12),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            padding: const EdgeInsets.all(6),
+            padding: const EdgeInsets.all(7),
             decoration: BoxDecoration(
-              color: iconColor.withOpacity(isDark ? 0.22 : 0.15),
+              color: iconColor.withOpacity(0.14),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -65,13 +79,16 @@ class TodayTipCard extends StatelessWidget {
               size: 18,
             ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   isRain ? "Weather Alert" : title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w800,
@@ -85,12 +102,31 @@ class TodayTipCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 12.5,
-                    height: 1.4,
+                    height: 1.3,
                     fontWeight: FontWeight.w500,
                     color: textColor,
                   ),
                 ),
               ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 10,
+              vertical: 4,
+            ),
+            decoration: BoxDecoration(
+              color: iconColor.withOpacity(0.12),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Text(
+              isRain ? "Alert" : "Tip",
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w700,
+                color: iconColor,
+              ),
             ),
           ),
         ],

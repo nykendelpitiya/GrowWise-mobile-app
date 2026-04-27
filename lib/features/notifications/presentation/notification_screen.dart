@@ -91,7 +91,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                           );
                         }
 
-                        final allDocs = (snapshot.data?.docs ?? []).where((doc) {
+                        final allDocs =
+                            (snapshot.data?.docs ?? []).where((doc) {
                           final data = doc.data() as Map<String, dynamic>;
                           return _isDue(data);
                         }).toList();
@@ -556,10 +557,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         ],
                       ),
                       const SizedBox(height: 4),
-                      Text(
-                        message,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                      ExpandableText(
+                        text: message,
                         style: TextStyle(
                           fontSize: 12.4,
                           color: subtitleColor,
@@ -817,6 +816,41 @@ class _NotificationScreenState extends State<NotificationScreen> {
     }
 
     return "";
+  }
+}
+
+class ExpandableText extends StatefulWidget {
+  final String text;
+  final TextStyle style;
+
+  const ExpandableText({
+    super.key,
+    required this.text,
+    required this.style,
+  });
+
+  @override
+  State<ExpandableText> createState() => _ExpandableTextState();
+}
+
+class _ExpandableTextState extends State<ExpandableText> {
+  bool expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          expanded = !expanded;
+        });
+      },
+      child: Text(
+        widget.text,
+        maxLines: expanded ? null : 2,
+        overflow: expanded ? TextOverflow.visible : TextOverflow.ellipsis,
+        style: widget.style,
+      ),
+    );
   }
 }
 
