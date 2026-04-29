@@ -83,6 +83,10 @@ class _CropRecommendationScreenState extends State<CropRecommendationScreen> {
       final status = result['status']?.toString() ?? '';
       final message = result['message']?.toString() ?? '';
 
+      /// ✅ NEW LINE (IMPORTANT)
+      final alternativeCrops =
+          (result['alternative_crops'] as List?)?.map((e) => e.toString()).toList() ?? [];
+
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -95,6 +99,9 @@ class _CropRecommendationScreenState extends State<CropRecommendationScreen> {
             temperature: temperature,
             status: status,
             message: message,
+
+            /// ✅ PASS TO RESULT SCREEN
+            alternativeCrops: alternativeCrops,
           ),
         ),
       );
@@ -118,19 +125,15 @@ class _CropRecommendationScreenState extends State<CropRecommendationScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final screenBg = isDark ? const Color(0xFF0F1720) : Colors.white;
-    final titleColor = isDark
-        ? const Color(0xFFF3F4F6)
-        : const Color(0xFF111827);
-    final subtitleColor = isDark
-        ? const Color(0xFF9CA3AF)
-        : const Color(0xFF6B7280);
+    final titleColor =
+        isDark ? const Color(0xFFF3F4F6) : const Color(0xFF111827);
+    final subtitleColor =
+        isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280);
     const primaryGreen = Color(0xFF077530);
-    final formCardBg = isDark
-        ? const Color(0xFF16212B)
-        : const Color(0xFFEAF7EE);
-    final formCardBorder = isDark
-        ? const Color(0xFF2A3A46)
-        : const Color(0xFFD5EADF);
+    final formCardBg =
+        isDark ? const Color(0xFF16212B) : const Color(0xFFEAF7EE);
+    final formCardBorder =
+        isDark ? const Color(0xFF2A3A46) : const Color(0xFFD5EADF);
 
     return Scaffold(
       backgroundColor: screenBg,

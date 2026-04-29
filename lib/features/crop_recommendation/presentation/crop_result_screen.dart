@@ -11,6 +11,7 @@ class CropResultScreen extends StatelessWidget {
   final double temperature;
   final String status;
   final String message;
+  final List<String> alternativeCrops;
 
   const CropResultScreen({
     super.key,
@@ -22,6 +23,7 @@ class CropResultScreen extends StatelessWidget {
     required this.temperature,
     required this.status,
     required this.message,
+    this.alternativeCrops = const [],
   });
 
   @override
@@ -40,6 +42,7 @@ class CropResultScreen extends StatelessWidget {
     const primaryGreen = Color(0xFF077530);
 
     final normalizedLevel = level.trim().toUpperCase();
+    final showAlternatives = !suitable && alternativeCrops.isNotEmpty;
 
     Color levelColor;
     Color levelBg;
@@ -73,24 +76,35 @@ class CropResultScreen extends StatelessWidget {
     }
 
     final messageBg = suitable
-        ? (isDark ? const Color(0xFF2D2A20) : const Color(0xFFFFF8E8))
-        : (isDark ? const Color(0xFF322820) : const Color(0xFFFFF4E8));
+        ? (isDark ? const Color(0xFF1F3528) : const Color(0xFFEAF7EE))
+        : (isDark ? const Color(0xFF3A2520) : const Color(0xFFFFF1E3));
+
+    final messageBorder = suitable
+        ? (isDark ? const Color(0xFF355243) : const Color(0xFFCFEAD8))
+        : (isDark ? const Color(0xFF704438) : const Color(0xFFF3C59B));
 
     final iconCircleBg = isDark ? const Color(0xFF111A24) : Colors.white;
-    final outlinedButtonBg =
-        isDark ? const Color(0xFF16212B) : Colors.white;
+    final outlinedButtonBg = isDark ? const Color(0xFF16212B) : Colors.white;
     final outlinedButtonBorder =
         isDark ? const Color(0xFF32414D) : const Color(0xFFD1D5DB);
 
     final String displayMessage;
-    if (!suitable) {
-      displayMessage = 'This crop is not suitable for your selected district.';
+    if (!suitable && showAlternatives) {
+      displayMessage =
+          '$crop is not suitable for $district. Therefore, try these recommended plants:';
+    } else if (!suitable) {
+      displayMessage = '$crop is not suitable for $district.';
     } else if (normalizedLevel == 'MEDIUM') {
       displayMessage =
           'This crop is suitable, but you can also try another crop for a better result.';
     } else {
       displayMessage = 'This crop is suitable for your selected district.';
     }
+
+    final double mainGap = showAlternatives ? 12 : 18;
+    final double resultGap = showAlternatives ? 12 : 14;
+    final double messagePaddingY = showAlternatives ? 10 : 12;
+    final double finalCardPaddingY = showAlternatives ? 14 : 16;
 
     return Scaffold(
       backgroundColor: screenBg,
@@ -168,7 +182,7 @@ class CropResultScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 18),
+                      SizedBox(height: mainGap),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -228,12 +242,12 @@ class CropResultScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 18),
+                      SizedBox(height: mainGap),
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(
+                        padding: EdgeInsets.symmetric(
                           horizontal: 14,
-                          vertical: 16,
+                          vertical: finalCardPaddingY,
                         ),
                         decoration: BoxDecoration(
                           color: suitableBg,
@@ -289,17 +303,17 @@ class CropResultScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 14),
+                      SizedBox(height: resultGap),
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(
+                        padding: EdgeInsets.symmetric(
                           horizontal: 14,
-                          vertical: 12,
+                          vertical: messagePaddingY,
                         ),
                         decoration: BoxDecoration(
                           color: messageBg,
                           borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: lineColor),
+                          border: Border.all(color: messageBorder, width: 1.1),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -312,18 +326,42 @@ class CropResultScreen extends StatelessWidget {
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            const SizedBox(height: 6),
+                            const SizedBox(height: 5),
                             Text(
                               displayMessage,
-                              maxLines: 3,
+                              maxLines: showAlternatives ? 2 : 3,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
-                                fontSize: 13,
-                                height: 1.35,
+                                fontSize: 12.5,
+                                height: 1.28,
                                 fontWeight: FontWeight.w500,
                                 color: titleColor,
                               ),
                             ),
+                            if (showAlternatives) ...[
+                              const SizedBox(height: 7),
+                              Center(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: alternativeCrops.map((cropName) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(bottom: 3),
+                                      child: Text(
+                                        '✅ $cropName',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontSize: 12.5,
+                                          height: 1.1,
+                                          fontWeight: FontWeight.w700,
+                                          color: Color(0xFF077530),
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            ],
                           ],
                         ),
                       ),
