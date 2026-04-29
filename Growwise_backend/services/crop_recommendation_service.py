@@ -21,8 +21,52 @@ df_original = pd.read_csv(DATA_DIR / "crop_recommendation_dataset.csv")
 df_original.columns = df_original.columns.str.strip()
 
 
+# ✅ District-wise alternative crops for Not Suitable results
+ALTERNATIVE_CROPS_BY_DISTRICT = {
+    "Ampara": ["Paddy", "Maize", "Groundnut"],
+    "Anuradhapura": ["Paddy", "Maize", "Sesame"],
+    "Badulla": ["Potato", "Vegetables", "Tea"],
+    "Batticaloa": ["Paddy", "Groundnut", "Chilli"],
+    "Colombo": ["Coconut", "Vegetables", "Leafy Greens"],
+    "Galle": ["Tea", "Cinnamon", "Coconut"],
+    "Gampaha": ["Coconut", "Pineapple", "Vegetables"],
+    "Hambantota": ["Groundnut", "Sesame", "Chilli"],
+    "Jaffna": ["Onion", "Chilli", "Grapes"],
+    "Kalutara": ["Rubber", "Coconut", "Pineapple"],
+    "Kandy": ["Tea", "Vegetables", "Pepper"],
+    "Kegalle": ["Rubber", "Tea", "Pepper"],
+    "Kilinochchi": ["Paddy", "Onion", "Groundnut"],
+    "Kurunegala": ["Coconut", "Paddy", "Maize"],
+    "Mannar": ["Paddy", "Onion", "Chilli"],
+    "Matale": ["Pepper", "Vegetables", "Cinnamon"],
+    "Matara": ["Tea", "Cinnamon", "Coconut"],
+    "Monaragala": ["Maize", "Groundnut", "Sesame"],
+    "Mullaitivu": ["Paddy", "Groundnut", "Chilli"],
+    "Nuwara Eliya": ["Tea", "Potato", "Carrot"],
+    "Polonnaruwa": ["Paddy", "Maize", "Soybean"],
+    "Puttalam": ["Coconut", "Cashew", "Onion"],
+    "Ratnapura": ["Tea", "Rubber", "Pepper"],
+    "Trincomalee": ["Paddy", "Maize", "Groundnut"],
+    "Vavuniya": ["Paddy", "Groundnut", "Chilli"],
+}
+
+
 def normalize_text(value: str) -> str:
     return value.strip().lower().replace("-", " ").replace("_", " ")
+
+
+def get_alternative_crops(district: str, selected_crop: str):
+    district_normalized = normalize_text(district)
+    selected_crop_normalized = normalize_text(selected_crop)
+
+    for district_name, crops in ALTERNATIVE_CROPS_BY_DISTRICT.items():
+        if normalize_text(district_name) == district_normalized:
+            return [
+                crop for crop in crops
+                if normalize_text(crop) != selected_crop_normalized
+            ]
+
+    return []
 
 
 def predict_crop(crop: str, district: str):
@@ -75,12 +119,26 @@ def predict_crop(crop: str, district: str):
 
     suitable = prob >= 50
 
+    alternative_crops = []
+
     if suitable:
         status = "Suitable"
         message = "This crop is suitable for your selected district."
     else:
         status = "Not Suitable"
-        message = "This crop is not suitable for your selected district."
+        alternative_crops = get_alternative_crops(
+            district_for_encoder,
+            crop_for_encoder,
+        )
+
+        if alternative_crops:
+            crops_text = ", ".join(alternative_crops)
+            message = (
+                f"{crop_for_encoder} is not suitable for {district_for_encoder}. "
+                f"You can try {crops_text} in this district."
+            )
+        else:
+            message = "This crop is not suitable for your selected district."
 
     return {
         "crop": crop_for_encoder,
@@ -96,4 +154,5 @@ def predict_crop(crop: str, district: str):
         "suitable": suitable,
         "status": status,
         "message": message,
+        "alternative_crops": alternative_crops,
     }
