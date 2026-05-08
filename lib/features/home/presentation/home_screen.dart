@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:growwise_mobile_app/features/care_recommendation/presentation/care_input_screen.dart';
 import 'package:growwise_mobile_app/features/crop_recommendation/presentation/crop_recommendation_screen.dart';
+import 'package:growwise_mobile_app/features/disease_detection/presentation/disease_detection_screen.dart';
 import 'package:growwise_mobile_app/features/home/presentation/widgets/feature_card.dart';
 import 'package:growwise_mobile_app/features/home/presentation/widgets/home_bottom_nav.dart';
 import 'package:growwise_mobile_app/features/home/presentation/widgets/home_colors.dart';
@@ -241,7 +242,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         iconPath: "assets/icons/disease.png",
                         title: "Disease Detection",
                         subtitle: "Identify plant diseases early",
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const DiseaseDetectionScreen(),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
