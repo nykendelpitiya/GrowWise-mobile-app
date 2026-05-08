@@ -28,6 +28,26 @@ class HomeHeader extends StatelessWidget {
         .map((snapshot) => snapshot.docs.length);
   }
 
+  Future<void> _markUnreadAsRead() async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) return;
+
+    final snapshot = await FirebaseFirestore.instance
+        .collection("notifications")
+        .where("userId", isEqualTo: user.uid)
+        .where("isRead", isEqualTo: false)
+        .get();
+
+    final batch = FirebaseFirestore.instance.batch();
+
+    for (final doc in snapshot.docs) {
+      batch.update(doc.reference, {"isRead": true});
+    }
+
+    await batch.commit();
+  }
+
   @override
   Widget build(BuildContext context) {
     /// 🔥 GET USER NAME
@@ -73,14 +93,18 @@ class HomeHeader extends StatelessWidget {
           ),
         ),
 
-        /// 🔔 NOTIFICATION ICON + 🔴 RED DOT
+        /// 🔔 NOTIFICATION ICON + COUNT BADGE
         StreamBuilder<int>(
           stream: getUnreadCount(),
           builder: (context, snapshot) {
             final count = snapshot.data ?? 0;
 
             return GestureDetector(
-              onTap: () {
+              onTap: () async {
+                await _markUnreadAsRead();
+
+                if (!context.mounted) return;
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -89,24 +113,25 @@ class HomeHeader extends StatelessWidget {
                 );
               },
               child: Stack(
+                clipBehavior: Clip.none,
                 children: [
                   Container(
-                    height: 48,
-                    width: 48,
+                    height: 52,
+                    width: 52,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       gradient: const LinearGradient(
                         colors: [
-                          Color(0xFFA7D7B7),
-                          Color(0xFF4F8F68),
+                          Color(0xFFA8E6B0),
+                          Color(0xFF077530),
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF2F5D3E).withOpacity(0.18),
-                          blurRadius: 10,
+                          color: const Color(0xFF077530).withOpacity(0.25),
+                          blurRadius: 12,
                           offset: const Offset(0, 5),
                         ),
                       ],
@@ -114,20 +139,52 @@ class HomeHeader extends StatelessWidget {
                     child: const Center(
                       child: Icon(
                         Icons.notifications_none_rounded,
-                        size: 22,
+                        size: 24,
                         color: Colors.white,
                       ),
                     ),
                   ),
 
-                  /// 🔴 RED DOT (ONLY IF UNREAD > 0)
+                  /// 🔴 REAL COUNT BADGE
                   if (count > 0)
-                    const Positioned(
-                      right: 4,
-                      top: 4,
-                      child: CircleAvatar(
-                        radius: 5,
-                        backgroundColor: Colors.red,
+                    Positioned(
+                      right: -4,
+                      top: -4,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 5,
+                          vertical: 2,
+                        ),
+                        constraints: const BoxConstraints(
+                          minWidth: 20,
+                          minHeight: 20,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFF3B30),
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 2,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.red.withOpacity(0.35),
+                              blurRadius: 8,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: Text(
+                            count.toString(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 9,
+                              fontWeight: FontWeight.w800,
+                              height: 1,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                 ],

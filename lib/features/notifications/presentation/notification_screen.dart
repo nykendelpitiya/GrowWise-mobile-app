@@ -23,6 +23,18 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   static const Color primaryGreen = Color(0xFF077530);
 
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        _markDueUnreadAsRead(user.uid);
+      }
+    });
+  }
+
   bool _isDue(Map<String, dynamic> data) {
     final scheduledAt = data['scheduledAt'];
 
@@ -686,6 +698,26 @@ class _NotificationScreenState extends State<NotificationScreen> {
         .collection("notifications")
         .doc(docId)
         .update({"isRead": true});
+  }
+
+  Future<void> _markDueUnreadAsRead(String userId) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection("notifications")
+        .where("userId", isEqualTo: userId)
+        .where("isRead", isEqualTo: false)
+        .get();
+
+    final batch = FirebaseFirestore.instance.batch();
+
+    for (final doc in snapshot.docs) {
+      final data = doc.data();
+
+      if (_isDue(data)) {
+        batch.update(doc.reference, {"isRead": true});
+      }
+    }
+
+    await batch.commit();
   }
 
   Future<void> _deleteNotification(String docId) async {

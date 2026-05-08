@@ -2,7 +2,7 @@ from pathlib import Path
 from datetime import date
 from dotenv import load_dotenv
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -10,6 +10,7 @@ from services.crop_recommendation_service import predict_crop
 from services.weather_service import get_weather
 from services.fertilizer_water_service import predict_fertilizer_water
 from services.schedule_service import create_schedule_notifications
+from services.diseases_detection import predict_disease
 
 
 from routes.today_tip import router as today_tip_router
@@ -106,6 +107,31 @@ def predict_care(data: CareRequest):
 
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/predict-disease")
+def predict_disease_route(
+    plant: str = Form(...),
+    file: UploadFile = File(...),
+):
+    try:
+        allowed_extensions = [".jpg", ".jpeg", ".png", ".webp"]
+        filename = file.filename.lower() if file.filename else ""
+
+        if not any(filename.endswith(ext) for ext in allowed_extensions):
+            raise HTTPException(
+                status_code=400,
+                detail="Please upload a valid image file",
+            )
+
+        return predict_disease(plant, file.file)
+
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
