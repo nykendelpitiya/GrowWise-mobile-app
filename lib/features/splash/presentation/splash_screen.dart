@@ -66,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen>
              
               Image.asset(
                 "assets/images/growwise_logo.png",
-                width: 180,
+                width: 250,
               ),
 
               const SizedBox(height: 16),

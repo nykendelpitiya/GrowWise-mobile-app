@@ -70,6 +70,19 @@ class _WeatherSummaryCardState extends State<WeatherSummaryCard> {
     return Icons.wb_cloudy_rounded;
   }
 
+  Color getWeatherIconColor(String condition) {
+    final value = condition.toLowerCase();
+
+    if (value.contains("rain")) return const Color(0xFF93C5FD);
+    if (value.contains("cloud")) return const Color(0xFFE5E7EB);
+    if (value.contains("clear")) return const Color(0xFFFACC15);
+    if (value.contains("storm") || value.contains("thunder")) {
+      return const Color(0xFFC4B5FD);
+    }
+
+    return const Color(0xFFE5E7EB);
+  }
+
   String getConditionText(String condition) {
     final value = condition.toLowerCase();
 
@@ -84,19 +97,7 @@ class _WeatherSummaryCardState extends State<WeatherSummaryCard> {
   }
 
   List<Color> getWeatherGradient(String condition) {
-    final value = condition.toLowerCase();
-
-    if (value.contains("rain")) {
-      return const [Color(0xFF2563EB), Color(0xFF0F766E)];
-    } else if (value.contains("cloud")) {
-      return const [Color(0xFF22C55E), Color(0xFF0F766E)];
-    } else if (value.contains("clear")) {
-      return const [Color(0xFFF59E0B), Color(0xFF16A34A)];
-    } else if (value.contains("storm") || value.contains("thunder")) {
-      return const [Color(0xFF374151), Color(0xFF065F46)];
-    } else {
-      return const [Color(0xFF22C55E), Color(0xFF077530)];
-    }
+    return const [Color(0xFF22C55E), Color(0xFF077530)];
   }
 
   @override
@@ -205,7 +206,7 @@ class _WeatherSummaryCardState extends State<WeatherSummaryCard> {
                             ),
                             child: Icon(
                               getWeatherIcon(condition),
-                              color: Colors.white,
+                              color: getWeatherIconColor(condition),
                               size: 20,
                             ),
                           ),

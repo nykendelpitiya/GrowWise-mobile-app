@@ -8,6 +8,7 @@ import 'package:growwise_mobile_app/features/auth/presentation/login_screen.dart
 import 'package:growwise_mobile_app/features/profile/presentation/personal_details_screen.dart';
 import 'package:growwise_mobile_app/features/profile/presentation/edit_profile_screen.dart';
 import 'package:growwise_mobile_app/features/profile/presentation/change_password_screen.dart';
+import 'package:growwise_mobile_app/features/home/presentation/widgets/home_bottom_nav.dart';
 
 import 'widgets/profile_header.dart';
 import 'widgets/profile_section_title.dart';
@@ -162,14 +163,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final screenBackground = isDark ? const Color(0xFF0B1220) : Colors.white;
-    final backIconColor = theme.iconTheme.color ?? (isDark ? Colors.white : Colors.black);
-    final backTitleColor =
-        theme.textTheme.bodyLarge?.color ?? (isDark ? Colors.white : Colors.black);
+    final backIconColor =
+        theme.iconTheme.color ?? (isDark ? Colors.white : Colors.black);
 
     final themeProvider = Provider.of<ThemeProvider>(context);
 
     return Scaffold(
       backgroundColor: screenBackground,
+      bottomNavigationBar: const HomeBottomNav(currentIndex: 2),
       body: SafeArea(
         child: isLoading
             ? Center(
@@ -181,12 +182,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 builder: (context, constraints) {
                   final compact = constraints.maxHeight < 760;
                   final horizontalPadding = compact ? 16.0 : 18.0;
-                  final topPadding = compact ? 12.0 : 16.0;
-                  final bottomPadding = compact ? 14.0 : 20.0;
-                  final headerGap = compact ? 10.0 : 14.0;
-                  final sectionGap = compact ? 10.0 : 12.0;
-                  final tileGap = compact ? 8.0 : 10.0;
-                  final groupGap = compact ? 12.0 : 16.0;
+                  final topPadding = compact ? 8.0 : 12.0;
+                  final bottomPadding = compact ? 6.0 : 8.0;
+                  final headerGap = compact ? 8.0 : 10.0;
+                  final sectionGap = compact ? 8.0 : 10.0;
+                  final tileGap = compact ? 7.0 : 8.0;
+                  final groupGap = compact ? 10.0 : 12.0;
 
                   return Padding(
                     padding: EdgeInsets.fromLTRB(
@@ -197,77 +198,75 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     child: Column(
                       children: [
-                        Row(
-                          children: [
-                            IconButton(
-                              onPressed: _handleBackTap,
-                              icon: Icon(
-                                Icons.arrow_back_ios_new,
-                                size: 18,
-                                color: backIconColor,
-                              ),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: IconButton(
+                            onPressed: _handleBackTap,
+                            icon: Icon(
+                              Icons.arrow_back_ios_new,
+                              size: 18,
+                              color: backIconColor,
                             ),
-                            const SizedBox(width: 4),
-                            Text(
-                              "Profile",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: backTitleColor,
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                        SizedBox(height: headerGap),
-                        ProfileHeader(
-                          name: fullName,
-                          email: email,
-                          district: district,
-                          imageUrl: imageUrl,
-                          onEditTap: _goToEditProfile,
-                          onImageTap: _onProfileImageTap,
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                SizedBox(height: headerGap),
+                                ProfileHeader(
+                                  name: fullName,
+                                  email: email,
+                                  district: district,
+                                  imageUrl: imageUrl,
+                                  onEditTap: _goToEditProfile,
+                                  onImageTap: _onProfileImageTap,
+                                ),
+                                SizedBox(height: groupGap),
+                                const Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: ProfileSectionTitle(title: "Account"),
+                                ),
+                                SizedBox(height: sectionGap),
+                                ProfileMenuTile(
+                                  icon: Icons.person_outline_rounded,
+                                  title: "Personal Details",
+                                  onTap: _goToPersonalDetails,
+                                ),
+                                SizedBox(height: tileGap),
+                                ProfileMenuTile(
+                                  icon: Icons.lock_outline_rounded,
+                                  title: "Change Password",
+                                  onTap: _goToChangePassword,
+                                ),
+                                SizedBox(height: groupGap),
+                                const Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: ProfileSectionTitle(title: "Settings"),
+                                ),
+                                SizedBox(height: sectionGap),
+                                ProfileSwitchTile(
+                                  title: "Dark Mode",
+                                  value: themeProvider.isDarkMode,
+                                  lightIcon: Icons.light_mode_outlined,
+                                  darkIcon: Icons.dark_mode_outlined,
+                                  onChanged: (v) {
+                                    themeProvider.toggleTheme(v);
+                                  },
+                                ),
+                                SizedBox(height: tileGap),
+                                ProfileSwitchTile(
+                                  title: "Notifications",
+                                  value: notifications,
+                                  lightIcon: Icons.notifications_none_rounded,
+                                  darkIcon: Icons.notifications_active_outlined,
+                                  onChanged: _updateNotifications,
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                         SizedBox(height: groupGap),
-                        const Align(
-                          alignment: Alignment.centerLeft,
-                          child: ProfileSectionTitle(title: "Account"),
-                        ),
-                        SizedBox(height: sectionGap),
-                        ProfileMenuTile(
-                          icon: Icons.person_outline_rounded,
-                          title: "Personal Details",
-                          onTap: _goToPersonalDetails,
-                        ),
-                        SizedBox(height: tileGap),
-                        ProfileMenuTile(
-                          icon: Icons.lock_outline_rounded,
-                          title: "Change Password",
-                          onTap: _goToChangePassword,
-                        ),
-                        SizedBox(height: groupGap),
-                        const Align(
-                          alignment: Alignment.centerLeft,
-                          child: ProfileSectionTitle(title: "Settings"),
-                        ),
-                        SizedBox(height: sectionGap),
-                        ProfileSwitchTile(
-                          title: "Dark Mode",
-                          value: themeProvider.isDarkMode,
-                          lightIcon: Icons.light_mode_outlined,
-                          darkIcon: Icons.dark_mode_outlined,
-                          onChanged: (v) {
-                            themeProvider.toggleTheme(v);
-                          },
-                        ),
-                        SizedBox(height: tileGap),
-                        ProfileSwitchTile(
-                          title: "Notifications",
-                          value: notifications,
-                          lightIcon: Icons.notifications_none_rounded,
-                          darkIcon: Icons.notifications_active_outlined,
-                          onChanged: _updateNotifications,
-                        ),
-                        const Spacer(),
                         LogoutButton(
                           onTap: _logout,
                         ),

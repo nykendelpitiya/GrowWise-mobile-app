@@ -257,6 +257,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             width: MediaQuery.of(context).size.width * 0.82,
                             child: DropdownButtonFormField<String>(
                               value: selectedDistrict,
+                              style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              ),
                               decoration: InputDecoration(
                                 labelText: "District",
                                 prefixIcon: const Icon(
