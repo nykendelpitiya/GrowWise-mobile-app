@@ -88,7 +88,7 @@ def start_scheduler():
         scheduler.add_job(
             send_due_notifications,
             trigger="interval",
-            minutes=1,
+            minutes=5,
             id="send_due_notifications",
             replace_existing=True,
         )

@@ -197,7 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 14),
 
                   Text(
-                    "Main Features",
+                    "Plant Insight AI",
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:growwise_mobile_app/services/care_store.dart';
 import 'package:growwise_mobile_app/features/care_recommendation/presentation/care_result_screen.dart';
+import 'package:growwise_mobile_app/features/home/presentation/widgets/home_bottom_nav.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -54,6 +55,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     return Scaffold(
       backgroundColor: screenBg,
+     bottomNavigationBar: const HomeBottomNav(currentIndex: 1),
       body: SafeArea(
         child: FutureBuilder<List<Map<String, dynamic>>>(
           future: _schedulesFuture,

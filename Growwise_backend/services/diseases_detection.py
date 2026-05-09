@@ -36,8 +36,8 @@ VERIFICATION_CLASSES = [
 
 MODEL_CONFIG = {
     "tea": {
-        "model_path": MODELS_DIR / "Tea" / "final_model.h5",
-        "image_size": (300, 300),
+        "model_path": MODELS_DIR / "Tea" / "tea_resnet50_best.h5",
+        "image_size": (380, 380),
         "classes": [
             "Brown Blight",
             "Gray Blight",
@@ -211,7 +211,7 @@ def predict_disease(plant: str, image_file):
             "message": "Please upload a valid leaf image.",
         }
 
-    if verification_confidence < 55:
+    if verification_confidence < 30:
         return {
             "success": False,
             "plant": plant,
@@ -233,9 +233,11 @@ def predict_disease(plant: str, image_file):
 
     result = predict_with_disease_model(selected_plant_key, original_image)
 
+    print("🦠 Disease Result:", result)
+
     confidence = result["confidence"]
 
-    if confidence < 60:
+    if confidence < 40:
         return {
             "success": False,
             "plant": plant,

@@ -27,8 +27,23 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
   XFile? selectedImage;
   bool isLoading = false;
   String? detectedDisease;
+  double? diseaseConfidence;
 
   static const String baseUrl = 'http://127.0.0.1:8000';
+
+  Color _getConfidenceColor(double? confidence, {String? disease}) {
+    final diseaseName = disease?.trim().toLowerCase();
+
+    if (diseaseName == 'healthy') {
+      return const Color(0xFF077530);
+    }
+
+    return confidence == null
+        ? const Color(0xFF077530)
+        : confidence >= 70
+            ? const Color(0xFFDC2626)
+            : const Color(0xFFF97316);
+  }
 
   Future<void> _pickImage(ImageSource source) async {
     final image = await _picker.pickImage(
@@ -41,6 +56,7 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
     setState(() {
       selectedImage = image;
       detectedDisease = null;
+      diseaseConfidence = null;
     });
   }
 
@@ -57,6 +73,7 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
     setState(() {
       isLoading = true;
       detectedDisease = null;
+      diseaseConfidence = null;
     });
 
     try {
@@ -82,15 +99,19 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
 
       if (response.statusCode == 200 && data['success'] == true) {
         final disease = data['disease']?.toString() ?? 'Unknown Disease';
+        final confidenceValue =
+            double.tryParse(data['confidence']?.toString() ?? '');
 
         setState(() {
           detectedDisease = disease;
+          diseaseConfidence = confidenceValue;
         });
 
         _showResultPopup(
           title: 'Detected Disease',
           message: disease,
           success: true,
+          confidence: confidenceValue,
         );
       } else {
         final errorMessage =
@@ -123,32 +144,100 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
     required String title,
     required String message,
     required bool success,
+    double? confidence,
   }) {
+    final confidenceColor =
+        _getConfidenceColor(confidence, disease: message);
+
     showDialog(
       context: context,
       builder: (_) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(22),
           ),
           title: Text(
             title,
             style: TextStyle(
-              fontWeight: FontWeight.w800,
-              color: success ? const Color(0xFF077530) : Colors.red,
+              fontWeight: FontWeight.w900,
+              color: success ? confidenceColor : Colors.red,
             ),
           ),
-          content: Text(
-            message,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+          content: success && confidence != null
+              ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      message,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF111827),
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                    Container(
+                      height: 96,
+                      width: 96,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: confidenceColor.withOpacity(0.10),
+                        border: Border.all(
+                          color: confidenceColor,
+                          width: 4,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: confidenceColor.withOpacity(0.20),
+                            blurRadius: 14,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Text(
+                          '${confidence.toStringAsFixed(1)}%',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w900,
+                            color: confidenceColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      message.trim().toLowerCase() == 'healthy'
+                          ? 'Healthy confidence'
+                          : confidence >= 70
+                              ? 'High confidence'
+                              : 'Medium confidence',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: confidenceColor,
+                      ),
+                    ),
+                  ],
+                )
+              : Text(
+                  message,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('OK'),
+              child: Text(
+                'OK',
+                style: TextStyle(
+                  fontWeight: FontWeight.w800,
+                  color: success ? confidenceColor : Colors.red,
+                ),
+              ),
             ),
           ],
         );
@@ -169,12 +258,17 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
         isDark ? const Color(0xFF2A3A45) : const Color(0xFFE5E7EB);
 
     const primaryGreen = Color(0xFF077530);
+    const lightGreen = Color(0xFFEAF7EE);
+    const resultTextGreen = Color(0xFF14532D);
+
+    final confidenceColor =
+        _getConfidenceColor(diseaseConfidence, disease: detectedDisease);
 
     return Scaffold(
       backgroundColor: bgColor,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 14, 20, 18),
+          padding: const EdgeInsets.fromLTRB(20, 10, 20, 14),
           child: Column(
             children: [
               Align(
@@ -182,8 +276,8 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
                 child: IconButton(
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(
-                    minWidth: 36,
-                    minHeight: 36,
+                    minWidth: 34,
+                    minHeight: 34,
                   ),
                   icon: Icon(
                     Icons.arrow_back_ios_new,
@@ -193,9 +287,7 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
                   onPressed: () => Navigator.pop(context),
                 ),
               ),
-
-              const SizedBox(height: 6),
-
+              const SizedBox(height: 2),
               Text(
                 'Disease Detection',
                 style: TextStyle(
@@ -204,47 +296,57 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
                   color: titleColor,
                 ),
               ),
-
-              const SizedBox(height: 6),
-
+              const SizedBox(height: 5),
               Text(
-                'Select plant and upload or capture a leaf image.',
+                'Upload a clear full leaf image. Avoid blurry images.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 12.5,
-                  height: 1.4,
+                  fontSize: 12.3,
+                  height: 1.35,
                   color: subtitleColor,
                 ),
               ),
+              const SizedBox(height: 14),
+              Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? const Color(0xFF111A24)
+                      : const Color(0xFFF3F7F4),
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(color: borderColor),
+                ),
+                child: Row(
+                  children: plants.map((plant) {
+                    final selected = selectedPlant == plant;
 
-              const SizedBox(height: 20),
-
-              Row(
-                children: plants.map((plant) {
-                  final selected = selectedPlant == plant;
-
-                  return Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 3),
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(14),
+                    return Expanded(
+                      child: GestureDetector(
                         onTap: isLoading
                             ? null
                             : () {
                                 setState(() {
                                   selectedPlant = plant;
                                   detectedDisease = null;
+                                  diseaseConfidence = null;
                                 });
                               },
-                        child: Container(
-                          height: 44,
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 220),
+                          height: 40,
+                          margin: const EdgeInsets.symmetric(horizontal: 2),
                           decoration: BoxDecoration(
-                            color: selected ? primaryGreen : cardColor,
+                            color: selected ? primaryGreen : Colors.transparent,
                             borderRadius: BorderRadius.circular(14),
-                            border: Border.all(
-                              color: selected ? primaryGreen : borderColor,
-                              width: 1.1,
-                            ),
+                            boxShadow: selected
+                                ? [
+                                    BoxShadow(
+                                      color: primaryGreen.withOpacity(0.25),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ]
+                                : [],
                           ),
                           child: Center(
                             child: Text(
@@ -260,79 +362,152 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
                           ),
                         ),
                       ),
-                    ),
-                  );
-                }).toList(),
+                    );
+                  }).toList(),
+                ),
               ),
-
-              const SizedBox(height: 18),
-
+              const SizedBox(height: 12),
               Row(
                 children: [
                   Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: isLoading
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(18),
+                      onTap: isLoading
                           ? null
                           : () => _pickImage(ImageSource.gallery),
-                      icon: const Icon(Icons.upload_rounded, size: 18),
-                      label: const Text('Upload'),
-                      style: OutlinedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(46),
-                        side: BorderSide(color: borderColor),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        height: 46,
+                        decoration: BoxDecoration(
+                          color: isDark ? const Color(0xFF16212B) : lightGreen,
+                          borderRadius: BorderRadius.circular(18),
+                          border: Border.all(
+                            color: isDark
+                                ? const Color(0xFF355243)
+                                : const Color(0xFFCFEAD8),
+                          ),
+                        ),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.upload_rounded,
+                              size: 18,
+                              color: primaryGreen,
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              'Upload',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w800,
+                                color: primaryGreen,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: isLoading
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(18),
+                      onTap: isLoading
                           ? null
                           : () => _pickImage(ImageSource.camera),
-                      icon: const Icon(Icons.camera_alt_rounded, size: 18),
-                      label: const Text('Capture'),
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(46),
-                        backgroundColor: primaryGreen,
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        height: 46,
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [
+                              Color(0xFF16A34A),
+                              Color(0xFF077530),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(18),
+                          boxShadow: [
+                            BoxShadow(
+                              color: primaryGreen.withOpacity(0.22),
+                              blurRadius: 12,
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
+                        ),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.camera_alt_rounded,
+                              size: 18,
+                              color: Colors.white,
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              'Capture',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   ),
                 ],
               ),
-
-              const SizedBox(height: 18),
-
+              const SizedBox(height: 12),
               Expanded(
+                flex: detectedDisease == null ? 1 : 8,
                 child: Container(
                   width: double.infinity,
+                  padding: selectedImage == null
+                      ? EdgeInsets.zero
+                      : const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: cardColor,
-                    borderRadius: BorderRadius.circular(22),
-                    border: Border.all(color: borderColor),
+                    color: isDark ? cardColor : const Color(0xFFFBFDFB),
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(
+                      color: isDark ? borderColor : const Color(0xFFDCEFE3),
+                      width: 1.2,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(isDark ? 0.22 : 0.07),
+                        blurRadius: 18,
+                        offset: const Offset(0, 7),
+                      ),
+                    ],
                   ),
                   child: selectedImage == null
                       ? Center(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(
-                                Icons.image_outlined,
-                                size: 48,
-                                color: subtitleColor,
+                              Container(
+                                height: 58,
+                                width: 58,
+                                decoration: BoxDecoration(
+                                  color: isDark
+                                      ? const Color(0xFF111A24)
+                                      : lightGreen,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.image_outlined,
+                                  size: 30,
+                                  color: subtitleColor,
+                                ),
                               ),
                               const SizedBox(height: 10),
                               Text(
                                 'No image selected',
                                 style: TextStyle(
                                   fontSize: 14,
-                                  fontWeight: FontWeight.w600,
+                                  fontWeight: FontWeight.w700,
                                   color: subtitleColor,
                                 ),
                               ),
@@ -340,74 +515,153 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
                           ),
                         )
                       : ClipRRect(
-                          borderRadius: BorderRadius.circular(22),
-                          child: kIsWeb
-                              ? Image.network(
-                                  selectedImage!.path,
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                )
-                              : Image.file(
-                                  File(selectedImage!.path),
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                ),
+                          borderRadius: BorderRadius.circular(20),
+                          child: Container(
+                            color: isDark
+                                ? const Color(0xFF0B1220)
+                                : Colors.white,
+                            child: kIsWeb
+                                ? Image.network(
+                                    selectedImage!.path,
+                                    fit: BoxFit.contain,
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                  )
+                                : Image.file(
+                                    File(selectedImage!.path),
+                                    fit: BoxFit.contain,
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                  ),
+                          ),
                         ),
                 ),
               ),
-
               if (detectedDisease != null) ...[
-                const SizedBox(height: 14),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? const Color(0xFF1B2C24)
-                        : const Color(0xFFEAF7EE),
-                    borderRadius: BorderRadius.circular(18),
-                    border: Border.all(
-                      color: isDark
-                          ? const Color(0xFF355243)
-                          : const Color(0xFFCFEAD8),
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        'Detected Disease',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: subtitleColor,
-                          fontWeight: FontWeight.w600,
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 6,
+                      child: Container(
+                        height: 74,
+                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                        decoration: BoxDecoration(
+                          color: lightGreen,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: primaryGreen,
+                            width: 1.6,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: primaryGreen.withOpacity(0.12),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'Detected Disease',
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: resultTextGreen,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              detectedDisease!,
+                              textAlign: TextAlign.center,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w900,
+                                color: resultTextGreen,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 6),
-                      Text(
-                        detectedDisease!,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w900,
-                          color: primaryGreen,
+                    ),
+                    if (diseaseConfidence != null) ...[
+                      const SizedBox(width: 10),
+                      Expanded(
+                        flex: 4,
+                        child: Container(
+                          height: 74,
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: confidenceColor.withOpacity(0.10),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: confidenceColor,
+                              width: 1.6,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: confidenceColor.withOpacity(0.16),
+                                blurRadius: 12,
+                                offset: const Offset(0, 5),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Confidence',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w800,
+                                  color: confidenceColor,
+                                ),
+                              ),
+                              const SizedBox(height: 5),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 11,
+                                  vertical: 5,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: confidenceColor.withOpacity(0.10),
+                                  borderRadius: BorderRadius.circular(18),
+                                  border: Border.all(
+                                    color: confidenceColor,
+                                    width: 1.4,
+                                  ),
+                                ),
+                                child: Text(
+                                  '${diseaseConfidence!.toStringAsFixed(1)}%',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w900,
+                                    color: confidenceColor,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
-                  ),
+                  ],
                 ),
               ],
-
-              const SizedBox(height: 16),
-
+              const SizedBox(height: 12),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: isLoading ? null : _detectDisease,
                   style: ElevatedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(52),
+                    minimumSize: const Size.fromHeight(50),
                     backgroundColor: primaryGreen,
                     foregroundColor: Colors.white,
                     disabledBackgroundColor: primaryGreen.withOpacity(0.5),

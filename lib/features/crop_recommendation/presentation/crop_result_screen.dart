@@ -63,7 +63,7 @@ class CropResultScreen extends StatelessWidget {
         : (isDark ? const Color(0xFF351F23) : const Color(0xFFFFEEEE));
 
     final suitableBorder = suitable
-        ? (isDark ? const Color(0xFF355243) : const Color(0xFFCFEAD8))
+        ? primaryGreen
         : (isDark ? const Color(0xFF5A3238) : const Color(0xFFF5CACA));
 
     final Color suitableColor;
@@ -76,11 +76,11 @@ class CropResultScreen extends StatelessWidget {
     }
 
     final messageBg = suitable
-        ? (isDark ? const Color(0xFF1F3528) : const Color(0xFFEAF7EE))
+        ? (isDark ? const Color(0xFF1F4D36) : const Color(0xFF50C878))
         : (isDark ? const Color(0xFF3A2520) : const Color(0xFFFFF1E3));
 
     final messageBorder = suitable
-        ? (isDark ? const Color(0xFF355243) : const Color(0xFFCFEAD8))
+        ? primaryGreen
         : (isDark ? const Color(0xFF704438) : const Color(0xFFF3C59B));
 
     final iconCircleBg = isDark ? const Color(0xFF111A24) : Colors.white;
@@ -254,7 +254,7 @@ class CropResultScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(18),
                           border: Border.all(
                             color: suitableBorder,
-                            width: 1.2,
+                            width: suitable ? 1.6 : 1.2,
                           ),
                         ),
                         child: Row(
@@ -313,7 +313,10 @@ class CropResultScreen extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: messageBg,
                           borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: messageBorder, width: 1.1),
+                          border: Border.all(
+                            color: messageBorder,
+                            width: suitable ? 1.3 : 1.1,
+                          ),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,

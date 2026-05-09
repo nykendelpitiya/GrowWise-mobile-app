@@ -5,7 +5,12 @@ import 'home_colors.dart';
 import 'package:growwise_mobile_app/features/profile/presentation/profile_screen.dart';
 
 class HomeBottomNav extends StatelessWidget {
-  const HomeBottomNav({super.key});
+  final int currentIndex;
+
+  const HomeBottomNav({
+    super.key,
+    this.currentIndex = 0,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -47,12 +52,23 @@ class HomeBottomNav extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const SizedBox(width: 74),
+                      _NavItem(
+                        icon: Icons.home_rounded,
+                        label: "Home",
+                        active: false,
+                        onTap: () {
+                          if (currentIndex == 0) return;
+
+                          Navigator.popUntil(context, (route) => route.isFirst);
+                        },
+                      ),
                       _NavItem(
                         icon: Icons.dashboard_rounded,
                         label: "Dashboard",
                         active: false,
                         onTap: () {
+                          if (currentIndex == 1) return;
+
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -66,6 +82,8 @@ class HomeBottomNav extends StatelessWidget {
                         label: "Profile",
                         active: false,
                         onTap: () {
+                          if (currentIndex == 2) return;
+
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -81,11 +99,38 @@ class HomeBottomNav extends StatelessWidget {
             ),
 
             Positioned(
-              left: 12,
+              left: currentIndex == 0 ? 12 : null,
               top: 0,
-              child: _ActiveHomeItem(
-                onTap: () {},
-              ),
+              child: currentIndex == 0
+                  ? _ActiveNavItem(
+                      icon: Icons.home_rounded,
+                      label: "Home",
+                      onTap: () {},
+                    )
+                  : const SizedBox.shrink(),
+            ),
+
+            Positioned(
+              top: 0,
+              child: currentIndex == 1
+                  ? _ActiveNavItem(
+                      icon: Icons.dashboard_rounded,
+                      label: "Dashboard",
+                      onTap: () {},
+                    )
+                  : const SizedBox.shrink(),
+            ),
+
+            Positioned(
+              right: 12,
+              top: 0,
+              child: currentIndex == 2
+                  ? _ActiveNavItem(
+                      icon: Icons.person_rounded,
+                      label: "Profile",
+                      onTap: () {},
+                    )
+                  : const SizedBox.shrink(),
             ),
           ],
         ),
@@ -94,10 +139,14 @@ class HomeBottomNav extends StatelessWidget {
   }
 }
 
-class _ActiveHomeItem extends StatelessWidget {
+class _ActiveNavItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
   final VoidCallback? onTap;
 
-  const _ActiveHomeItem({
+  const _ActiveNavItem({
+    required this.icon,
+    required this.label,
     this.onTap,
   });
 
@@ -142,17 +191,17 @@ class _ActiveHomeItem extends StatelessWidget {
                     end: Alignment.bottomRight,
                   ),
                 ),
-                child: const Icon(
-                  Icons.home_rounded,
+                child: Icon(
+                  icon,
                   color: Colors.white,
                   size: 23,
                 ),
               ),
             ),
             const SizedBox(height: 3),
-            const Text(
-              "Home",
-              style: TextStyle(
+            Text(
+              label,
+              style: const TextStyle(
                 fontSize: 10.5,
                 fontWeight: FontWeight.w800,
                 color: kPrimaryGreenDark,
@@ -185,6 +234,8 @@ class _NavItem extends StatelessWidget {
     final inactiveColor =
         isDark ? const Color(0xFF94A3B8) : const Color(0xFF94A3B8);
 
+    final activeColor = isDark ? const Color(0xFF7ED957) : kPrimaryGreenDark;
+
     return GestureDetector(
       onTap: onTap,
       child: SizedBox(
@@ -196,7 +247,7 @@ class _NavItem extends StatelessWidget {
             Icon(
               icon,
               size: 22,
-              color: inactiveColor,
+              color: active ? activeColor : inactiveColor,
             ),
             const SizedBox(height: 3),
             Text(
@@ -205,8 +256,8 @@ class _NavItem extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 9.5,
-                fontWeight: FontWeight.w600,
-                color: inactiveColor,
+                fontWeight: active ? FontWeight.w800 : FontWeight.w600,
+                color: active ? activeColor : inactiveColor,
               ),
             ),
           ],

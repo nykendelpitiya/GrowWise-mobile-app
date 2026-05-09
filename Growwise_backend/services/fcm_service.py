@@ -11,6 +11,7 @@ def get_users_debug():
             "doc_id": doc.id,
             "email": data.get("email"),
             "has_fcmToken": "fcmToken" in data,
+            "notifications": data.get("notifications"),
             "keys": list(data.keys()),
         })
 
@@ -39,6 +40,16 @@ def send_notification_to_email(email: str, title: str, body: str):
             "email": email,
         }
 
+    notifications_enabled = matched_user.get("notifications", True)
+
+    if notifications_enabled is False:
+        return {
+            "success": True,
+            "message": "Notification skipped because notifications are turned off",
+            "user_id": matched_user_id,
+            "notifications": False,
+        }
+
     token = matched_user.get("fcmToken")
 
     if not token:
@@ -63,5 +74,6 @@ def send_notification_to_email(email: str, title: str, body: str):
         "success": True,
         "message": "Notification sent",
         "user_id": matched_user_id,
+        "notifications": True,
         "response": response,
     }
