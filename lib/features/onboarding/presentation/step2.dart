@@ -11,26 +11,41 @@ class Step2 extends StatefulWidget {
 class _Step2State extends State<Step2> {
   bool animate = false;
 
-  final List<Map<String, String>> features = const [
+  final List<Map<String, dynamic>> features = const [
     {
-      "title": "Crop Recommendation",
-      "subtitle": "Find the most suitable crop for your district."
+      "icon": Icons.psychology_rounded,
+      "title": "AI Crop Recommendation",
+      "subtitle": "Find the best crop using smart AI insights."
     },
     {
-      "title": "Fertilizer & Water Recommendation",
-      "subtitle": "Get clear fertilizer and watering guidance."
+      "icon": Icons.water_drop_rounded,
+      "title": "Smart Care Guidance",
+      "subtitle": "Get fertilizer and watering plans."
     },
     {
-      "title": "Disease Detection",
-      "subtitle": "Detect plant diseases early using image analysis."
+      "icon": Icons.health_and_safety_rounded,
+      "title": "AI Disease Detection",
+      "subtitle": "Detect plant diseases using image analysis."
     },
   ];
 
-  final List<String> crops = const [
-    "Tea",
-    "Cinnamon",
-    "Pepper",
-    "Areca Nut",
+  final List<Map<String, dynamic>> crops = const [
+    {
+      "name": "Tea",
+      "icon": Icons.local_florist_rounded,
+    },
+    {
+      "name": "Cinnamon",
+      "icon": Icons.eco_rounded,
+    },
+    {
+      "name": "Pepper",
+      "icon": Icons.grass_rounded,
+    },
+    {
+      "name": "Areca Nut",
+      "icon": Icons.spa_rounded,
+    },
   ];
 
   @override
@@ -42,6 +57,7 @@ class _Step2State extends State<Step2> {
   }
 
   Widget featureItem({
+    required IconData icon,
     required String title,
     required String subtitle,
     required int delay,
@@ -54,51 +70,85 @@ class _Step2State extends State<Step2> {
         duration: Duration(milliseconds: 500 + delay),
         opacity: animate ? 1 : 0,
         child: Padding(
-          padding: const EdgeInsets.only(bottom: 13),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                margin: const EdgeInsets.only(top: 2),
-                height: 23,
-                width: 23,
-                decoration: const BoxDecoration(
-                  color: AppColors.primary,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.check_rounded,
-                  size: 16,
-                  color: Colors.white,
-                ),
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(17),
+              border: Border.all(
+                color: AppColors.primary.withOpacity(0.12),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 15.2,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      subtitle,
-                      style: const TextStyle(
-                        fontSize: 12.2,
-                        color: AppColors.textSecondary,
-                        height: 1.25,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.03),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
                 ),
-              ),
-            ],
+              ],
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 34,
+                  width: 34,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xFF22C55E),
+                        Color(0xFF077530),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary.withOpacity(0.18),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    icon,
+                    size: 18,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(width: 11),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 13.8,
+                          fontWeight: FontWeight.w900,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        subtitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 11.2,
+                          color: AppColors.textSecondary,
+                          height: 1.2,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -107,6 +157,7 @@ class _Step2State extends State<Step2> {
 
   Widget cropItem({
     required String name,
+    required IconData icon,
     required int delay,
   }) {
     return AnimatedScale(
@@ -117,33 +168,96 @@ class _Step2State extends State<Step2> {
         duration: Duration(milliseconds: 450 + delay),
         opacity: animate ? 1 : 0,
         child: Container(
-          width: 120,
-          padding: const EdgeInsets.symmetric(vertical: 10),
+          width: 116,
+          height: 46,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           decoration: BoxDecoration(
-            color: const Color(0xFFDCFCE7),
-            borderRadius: BorderRadius.circular(16),
+            gradient: const LinearGradient(
+              colors: [
+                Color(0xFFF7FFF9),
+                Color(0xFFE2F7E8),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(20),
             border: Border.all(
               color: AppColors.primary.withOpacity(0.18),
             ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary.withOpacity(0.06),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
-          child: Column(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
-                Icons.spa_rounded,
-                size: 20,
+              Icon(
+                icon,
+                size: 18,
                 color: AppColors.primary,
               ),
-              const SizedBox(height: 5),
-              Text(
-                name,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 13.2,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimary,
+              const SizedBox(width: 7),
+              Flexible(
+                child: Text(
+                  name,
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w900,
+                    color: AppColors.textPrimary,
+                  ),
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget aiBadge() {
+    return AnimatedScale(
+      duration: const Duration(milliseconds: 550),
+      scale: animate ? 1 : 0.9,
+      curve: Curves.easeOutBack,
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 550),
+        opacity: animate ? 1 : 0,
+        child: Center(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: const Color(0xFFEAF7EE),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(
+                color: AppColors.primary.withOpacity(0.18),
+              ),
+            ),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.auto_awesome_rounded,
+                  size: 14,
+                  color: AppColors.primary,
+                ),
+                SizedBox(width: 6),
+                Text(
+                  "AI Powered Agriculture",
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -154,13 +268,13 @@ class _Step2State extends State<Step2> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: const EdgeInsets.symmetric(horizontal: 23),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 12),
-
-            
+            const SizedBox(height: 4),
+            aiBadge(),
+            const SizedBox(height: 10),
             AnimatedSlide(
               duration: const Duration(milliseconds: 550),
               curve: Curves.easeOutCubic,
@@ -172,22 +286,24 @@ class _Step2State extends State<Step2> {
                   child: Column(
                     children: [
                       Text(
-                        "Smart Farming Solutions",
+                        "AI-Powered Smart Farming",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 23,
+                          fontSize: 21,
                           fontWeight: FontWeight.w900,
                           color: AppColors.textPrimary,
                         ),
                       ),
-                      SizedBox(height: 6),
+                      SizedBox(height: 5),
                       Text(
-                        "Plan crops, care schedules, and plant health in one simple app.",
+                        "Get AI-based crop recommendations, disease detection, and smart plant care guidance.",
                         textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontSize: 12.5,
+                          fontSize: 11.7,
                           color: AppColors.textSecondary,
-                          height: 1.35,
+                          height: 1.32,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -196,55 +312,47 @@ class _Step2State extends State<Step2> {
                 ),
               ),
             ),
-
-            const SizedBox(height: 22),
-
-            /// 🔹 FEATURES
+            const SizedBox(height: 13),
             Column(
               children: List.generate(
                 features.length,
                 (index) => featureItem(
-                  title: features[index]["title"]!,
-                  subtitle: features[index]["subtitle"]!,
-                  delay: index * 100,
+                  icon: features[index]["icon"] as IconData,
+                  title: features[index]["title"] as String,
+                  subtitle: features[index]["subtitle"] as String,
+                  delay: index * 90,
                 ),
               ),
             ),
-
-            const SizedBox(height: 18),
-
-            
+            const SizedBox(height: 11),
             const Center(
               child: Text(
                 "Supported Crops",
                 style: TextStyle(
-                  fontSize: 15.5,
-                  fontWeight: FontWeight.w800,
+                  fontSize: 14.5,
+                  fontWeight: FontWeight.w900,
                   color: AppColors.textPrimary,
                 ),
               ),
             ),
-
-            const SizedBox(height: 12),
-
-           
+            const SizedBox(height: 10),
             Center(
               child: Wrap(
                 alignment: WrapAlignment.center,
-                spacing: 10,
-                runSpacing: 10,
+                spacing: 8,
+                runSpacing: 8,
                 children: List.generate(
                   crops.length,
                   (index) => cropItem(
-                    name: crops[index],
-                    delay: index * 90,
+                    name: crops[index]["name"] as String,
+                    icon: crops[index]["icon"] as IconData,
+                    delay: index * 80,
                   ),
                 ),
               ),
             ),
-
-            const Spacer(),
-            const SizedBox(height: 8),
+            const Spacer(flex: 1),
+            const SizedBox(height: 0),
           ],
         ),
       ),

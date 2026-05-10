@@ -10,17 +10,32 @@ def send_due_notifications():
     now = datetime.now(timezone.utc)
 
     try:
+        notifications_ref = db.collection("notifications")
+
         due_notifications = (
-            db.collection("notifications")
+            notifications_ref
             .where("sent", "==", False)
-            .where("scheduledAt", "<=", now)
-            .limit(20)
             .stream()
         )
 
         for notification_doc in due_notifications:
             notification_id = notification_doc.id
             data = notification_doc.to_dict()
+
+            scheduled_at = data.get("scheduledAt")
+
+            if not scheduled_at:
+                print("⚠️ Missing scheduledAt:", notification_id)
+                continue
+
+            try:
+                scheduled_time = scheduled_at.astimezone(timezone.utc)
+            except Exception as e:
+                print("⚠️ Invalid scheduledAt:", notification_id, e)
+                continue
+
+            if scheduled_time > now:
+                continue
 
             user_id = data.get("userId")
             title = data.get("title", "GrowWise Reminder")
@@ -66,22 +81,32 @@ def send_due_notifications():
                 response = messaging.send(message)
 
                 try:
-                    db.collection("notifications").document(notification_id).update({
+                    db.collection("notifications").document(
+                        notification_id
+                    ).update({
                         "sent": True,
                         "sentAt": datetime.now(timezone.utc),
                         "response": str(response),
                     })
-                except Exception as e:
-                    print("⚠️ Failed to update sent status:", notification_id, e)
 
-                print("✅ Due notification sent:", user_id, title)
+                    print("✅ Notification sent:", user_id, title)
+
+                except Exception as e:
+                    print(
+                        "⚠️ Failed to update sent status:",
+                        notification_id,
+                        e,
+                    )
 
             except Exception as e:
                 try:
-                    db.collection("notifications").document(notification_id).update({
+                    db.collection("notifications").document(
+                        notification_id
+                    ).update({
                         "sendError": str(e),
                         "lastTriedAt": datetime.now(timezone.utc),
                     })
+
                 except Exception as update_error:
                     print(
                         "⚠️ Failed to update send error:",
@@ -103,7 +128,7 @@ def start_scheduler():
         scheduler.add_job(
             send_due_notifications,
             trigger="interval",
-            hours=6,
+            minutes=1,
             id="send_due_notifications",
             replace_existing=True,
             max_instances=1,
@@ -111,6 +136,10 @@ def start_scheduler():
         )
 
         scheduler.start()
+
+        send_due_notifications()
+
         print("🚀 Scheduler started...")
+
     else:
         print("⚠️ Scheduler already running...")

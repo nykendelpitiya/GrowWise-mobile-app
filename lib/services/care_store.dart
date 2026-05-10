@@ -5,7 +5,6 @@ class CareStore {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   static final FirebaseAuth _auth = FirebaseAuth.instance;
 
- 
   static const bool testMode = false;
 
   static String get _uid {
@@ -31,7 +30,15 @@ class CareStore {
     required String title,
     required Map<String, dynamic> result,
   }) async {
-    final scheduleDoc = await _scheduleCollection.add({
+    final scheduleId =
+        result['scheduleId']?.toString() ?? result['schedule_id']?.toString();
+
+    final scheduleDoc = scheduleId != null && scheduleId.trim().isNotEmpty
+        ? _scheduleCollection.doc(scheduleId.trim())
+        : _scheduleCollection.doc();
+
+    await scheduleDoc.set({
+      'scheduleId': scheduleDoc.id,
       'title': title,
       'crop': result['crop'],
       'district': result['district'],
@@ -53,6 +60,16 @@ class CareStore {
     required String title,
     required Map<String, dynamic> result,
   }) async {
+    final existingNotifications = await _notificationCollection
+        .where('userId', isEqualTo: _uid)
+        .where('scheduleId', isEqualTo: scheduleId)
+        .limit(1)
+        .get();
+
+    if (existingNotifications.docs.isNotEmpty) {
+      return;
+    }
+
     final crop = result['crop']?.toString() ?? 'Plant';
     final district = result['district']?.toString() ?? '';
     final plantingDateStr = result['planting_date']?.toString() ?? '';
@@ -65,7 +82,6 @@ class CareStore {
     final now = DateTime.now();
     final batch = _firestore.batch();
 
-    
     for (int i = 0; i < 3; i++) {
       final waterTime = DateTime(now.year, now.month, now.day + i, 8, 0);
 
@@ -88,7 +104,6 @@ class CareStore {
       });
     }
 
-    
     final fertilizerTime = DateTime(now.year, now.month, now.day + 7, 8, 0);
 
     final fertilizerDoc = _notificationCollection.doc();
@@ -141,13 +156,12 @@ class CareStore {
     return snapshot.docs.map((doc) {
       final data = doc.data();
       data['doc_id'] = doc.id;
+      data['scheduleId'] = doc.id;
       return data;
     }).toList();
   }
 
   static Future<void> deleteSchedule(String docId) async {
-    await _scheduleCollection.doc(docId).delete();
-
     final notifications = await _notificationCollection
         .where('userId', isEqualTo: _uid)
         .where('scheduleId', isEqualTo: docId)
@@ -158,6 +172,8 @@ class CareStore {
     for (final doc in notifications.docs) {
       batch.delete(doc.reference);
     }
+
+    batch.delete(_scheduleCollection.doc(docId));
 
     await batch.commit();
   }

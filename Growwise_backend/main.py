@@ -61,6 +61,7 @@ class CareRequest(BaseModel):
     district: str
     planting_date: date
     quantity: int
+    schedule_id: str | None = None
 
 
 # ================================
@@ -102,6 +103,7 @@ def predict_care(data: CareRequest):
                 water_total_per_day=result["water_total_per_day"],
                 fertilizer_total_per_week=result["fertilizer_total_per_week"],
                 splits_per_year=result["schedule"]["splits_per_year"],
+                schedule_id=data.schedule_id,
             )
 
             result["notification_schedule"] = notification_result
@@ -148,14 +150,12 @@ def predict_disease_route(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-
 @app.get("/weather")
 def weather_by_district(district: str = Query(...)):
     try:
         return get_weather(district)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
 
 @app.get("/weather/{city}")

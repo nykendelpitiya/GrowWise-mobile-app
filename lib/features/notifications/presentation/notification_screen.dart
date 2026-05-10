@@ -104,11 +104,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                           );
                         }
 
-                        final allDocs =
-                            (snapshot.data?.docs ?? []).where((doc) {
-                          final data = doc.data() as Map<String, dynamic>;
-                          return _isDue(data);
-                        }).toList();
+                        final allDocs = (snapshot.data?.docs ?? []).toList();
 
                         allDocs.sort((a, b) {
                           final aData = a.data() as Map<String, dynamic>;
@@ -146,7 +142,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             icon: Icons.notifications_none_rounded,
                             title: "No notifications yet",
                             subtitle:
-                                "Only due plant care reminders will appear here.",
+                                "Your plant care reminders will appear here.",
                             color: subtitleColor,
                           );
                         }
@@ -238,10 +234,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   .where("isRead", isEqualTo: false)
                   .snapshots(),
               builder: (context, snapshot) {
-                final unreadCount = (snapshot.data?.docs ?? []).where((doc) {
-                  final data = doc.data() as Map<String, dynamic>;
-                  return _isDue(data);
-                }).length;
+                final unreadCount = (snapshot.data?.docs ?? []).length;
 
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -347,7 +340,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             size: 18, color: Colors.black87),
                         SizedBox(width: 8),
                         TText(
-                          "Clear due notifications",
+                          "Clear notifications",
                           style: TextStyle(color: Colors.black),
                         ),
                       ],
@@ -420,6 +413,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
     final type = _getNotificationType(data);
     final typeStyle = _getTypeStyle(type);
+
+    final cardColor = isDark ? const Color(0xFF16212B) : Colors.white;
+    final cardBorder =
+        isDark ? const Color(0xFF2E4153) : const Color(0xFFCFEAD8);
 
     return Dismissible(
       key: ValueKey(docId),
@@ -497,14 +494,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
         },
         child: Container(
           margin: const EdgeInsets.only(bottom: 10),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF16212B) : typeStyle.cardColor,
+            color: cardColor,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: typeStyle.borderColor, width: 1.2),
+            border: Border.all(color: cardBorder, width: 1.2),
             boxShadow: [
               BoxShadow(
-                color: typeStyle.iconColor.withOpacity(isDark ? 0.12 : 0.10),
+                color: Colors.black.withOpacity(isDark ? 0.18 : 0.05),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -516,100 +512,130 @@ class _NotificationScreenState extends State<NotificationScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  height: 32,
-                  width: 32,
+                  width: 5,
+                  height: 108,
                   decoration: BoxDecoration(
-                    color: typeStyle.iconBgColor,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    typeStyle.icon,
                     color: typeStyle.iconColor,
-                    size: 17,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(16),
+                      bottomLeft: Radius.circular(16),
+                    ),
                   ),
                 ),
-                const SizedBox(width: 11),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          if (isImportant)
-                            Padding(
-                              padding: const EdgeInsets.only(right: 5),
-                              child: Icon(
-                                Icons.star_rounded,
-                                color: typeStyle.iconColor,
-                                size: 15,
-                              ),
-                            ),
-                          Expanded(
-                            child: TText(
-                              title,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontWeight:
-                                    isRead ? FontWeight.w600 : FontWeight.w800,
-                                fontSize: 13.5,
-                                color: titleColor,
-                              ),
-                            ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 10,
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: 32,
+                          width: 32,
+                          decoration: BoxDecoration(
+                            color: typeStyle.iconBgColor,
+                            shape: BoxShape.circle,
                           ),
-                          if (!isRead)
-                            Container(
-                              height: 8,
-                              width: 8,
-                              margin: const EdgeInsets.only(left: 8),
-                              decoration: BoxDecoration(
-                                color: typeStyle.iconColor,
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      ExpandableText(
-                        text: message,
-                        style: TextStyle(
-                          fontSize: 12.4,
-                          color: subtitleColor,
-                          height: 1.30,
+                          child: Icon(
+                            typeStyle.icon,
+                            color: typeStyle.iconColor,
+                            size: 17,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 6),
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 3,
-                            ),
-                            decoration: BoxDecoration(
-                              color: typeStyle.iconBgColor,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: TText(
-                              type,
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w800,
-                                color: typeStyle.iconColor,
+                        const SizedBox(width: 11),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  if (isImportant)
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 5),
+                                      child: Icon(
+                                        Icons.star_rounded,
+                                        color: typeStyle.iconColor,
+                                        size: 15,
+                                      ),
+                                    ),
+                                  Expanded(
+                                    child: TText(
+                                      title,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontWeight: isRead
+                                            ? FontWeight.w600
+                                            : FontWeight.w800,
+                                        fontSize: 13.5,
+                                        color: titleColor,
+                                      ),
+                                    ),
+                                  ),
+                                  if (!isRead)
+                                    Container(
+                                      height: 8,
+                                      width: 8,
+                                      margin: const EdgeInsets.only(left: 8),
+                                      decoration: BoxDecoration(
+                                        color: typeStyle.iconColor,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                ],
                               ),
-                            ),
+                              const SizedBox(height: 4),
+                              ExpandableText(
+                                text: message,
+                                style: TextStyle(
+                                  fontSize: 12.4,
+                                  color: subtitleColor,
+                                  height: 1.30,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 3,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: typeStyle.iconBgColor,
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                                        color: typeStyle.iconColor
+                                            .withOpacity(0.18),
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: TText(
+                                      type,
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w800,
+                                        color: typeStyle.iconColor,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    _formatTime(timestamp),
+                                    style: TextStyle(
+                                      fontSize: 10.3,
+                                      color: subtitleColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: 8),
-                          Text(
-                            _formatTime(timestamp),
-                            style: TextStyle(
-                              fontSize: 10.3,
-                              color: subtitleColor,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -626,10 +652,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
     final Map<String, List<QueryDocumentSnapshot>> grouped = {
       "Today": [],
       "Yesterday": [],
+      "Upcoming": [],
       "Older": [],
     };
 
     final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
 
     for (final doc in docs) {
       final data = doc.data() as Map<String, dynamic>;
@@ -637,7 +665,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
       if (timestamp is Timestamp) {
         final dt = timestamp.toDate();
-        final today = DateTime(now.year, now.month, now.day);
         final itemDate = DateTime(dt.year, dt.month, dt.day);
         final diff = today.difference(itemDate).inDays;
 
@@ -645,6 +672,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
           grouped["Today"]!.add(doc);
         } else if (diff == 1) {
           grouped["Yesterday"]!.add(doc);
+        } else if (diff < 0) {
+          grouped["Upcoming"]!.add(doc);
         } else {
           grouped["Older"]!.add(doc);
         }
@@ -711,11 +740,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     final batch = FirebaseFirestore.instance.batch();
 
     for (final doc in snapshot.docs) {
-      final data = doc.data();
-
-      if (_isDue(data)) {
-        batch.update(doc.reference, {"isRead": true});
-      }
+      batch.update(doc.reference, {"isRead": true});
     }
 
     await batch.commit();
@@ -738,10 +763,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     final batch = FirebaseFirestore.instance.batch();
 
     for (final doc in snapshot.docs) {
-      final data = doc.data();
-      if (_isDue(data)) {
-        batch.update(doc.reference, {"isRead": true});
-      }
+      batch.update(doc.reference, {"isRead": true});
     }
 
     await batch.commit();
@@ -756,10 +778,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     final batch = FirebaseFirestore.instance.batch();
 
     for (final doc in snapshot.docs) {
-      final data = doc.data();
-      if (_isDue(data)) {
-        batch.delete(doc.reference);
-      }
+      batch.delete(doc.reference);
     }
 
     await batch.commit();
@@ -799,8 +818,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
           icon: Icons.water_drop_rounded,
           iconColor: Color(0xFF0284C7),
           iconBgColor: Color(0xFFDFF3FF),
-          cardColor: Color(0xFFEAF7FF),
-          borderColor: Color(0xFF7DD3FC),
+          cardColor: Colors.white,
+          borderColor: Color(0xFFCFEAD8),
         );
 
       case "Weather":
@@ -808,8 +827,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
           icon: Icons.cloud_rounded,
           iconColor: Color(0xFFF97316),
           iconBgColor: Color(0xFFFFE8CC),
-          cardColor: Color(0xFFFFF1DB),
-          borderColor: Color(0xFFFDBA74),
+          cardColor: Colors.white,
+          borderColor: Color(0xFFCFEAD8),
         );
 
       case "Fertilizer":
@@ -817,8 +836,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
           icon: Icons.grass_rounded,
           iconColor: Color(0xFF16A34A),
           iconBgColor: Color(0xFFDDFBE8),
-          cardColor: Color(0xFFE9FFF0),
-          borderColor: Color(0xFF86EFAC),
+          cardColor: Colors.white,
+          borderColor: Color(0xFFCFEAD8),
         );
 
       default:
@@ -826,8 +845,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
           icon: Icons.notifications_active_rounded,
           iconColor: Color(0xFF7C3AED),
           iconBgColor: Color(0xFFF0E6FF),
-          cardColor: Color(0xFFF8F0FF),
-          borderColor: Color(0xFFC4B5FD),
+          cardColor: Colors.white,
+          borderColor: Color(0xFFCFEAD8),
         );
     }
   }
@@ -838,9 +857,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
       final now = DateTime.now();
       final diff = now.difference(dt);
 
-      if (diff.inSeconds < 60) return "Just now";
-      if (diff.inMinutes < 60) return "${diff.inMinutes} min ago";
-      if (diff.inHours < 24) return "${diff.inHours} hr ago";
+      if (diff.inSeconds < 60 && !diff.isNegative) return "Just now";
+      if (diff.inMinutes < 60 && !diff.isNegative) {
+        return "${diff.inMinutes} min ago";
+      }
+      if (diff.inHours < 24 && !diff.isNegative) {
+        return "${diff.inHours} hr ago";
+      }
 
       final hour = dt.hour.toString().padLeft(2, '0');
       final minute = dt.minute.toString().padLeft(2, '0');

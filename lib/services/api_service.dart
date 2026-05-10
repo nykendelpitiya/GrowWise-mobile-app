@@ -34,27 +34,42 @@ class ApiService {
     required String district,
     required String plantingDate,
     required int quantity,
+    String? scheduleId,
   }) async {
     final url = Uri.parse("$baseUrl/predict-care");
+
+    final generatedScheduleId =
+        scheduleId != null && scheduleId.trim().isNotEmpty
+            ? scheduleId.trim()
+            : "${userId}_${crop.toLowerCase().replaceAll(' ', '_')}_${district.toLowerCase().replaceAll(' ', '_')}_$plantingDate";
+
+    final body = {
+      "user_id": userId,
+      "crop": crop,
+      "district": district,
+      "planting_date": plantingDate,
+      "quantity": quantity,
+      "schedule_id": generatedScheduleId,
+    };
 
     final response = await http.post(
       url,
       headers: {
         "Content-Type": "application/json",
       },
-      body: jsonEncode({
-        "user_id": userId,
-        "crop": crop,
-        "district": district,
-        "planting_date": plantingDate,
-        "quantity": quantity,
-      }),
+      body: jsonEncode(body),
     );
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      final decoded = jsonDecode(response.body);
+
+      decoded["schedule_id"] = generatedScheduleId;
+
+      return decoded;
     } else {
-      throw Exception("Failed to get care recommendation: ${response.body}");
+      throw Exception(
+        "Failed to get care recommendation: ${response.body}",
+      );
     }
   }
 
