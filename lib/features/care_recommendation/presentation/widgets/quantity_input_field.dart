@@ -17,6 +17,7 @@ class QuantityInputField extends StatelessWidget {
         isDark ? const Color(0xFF6A86A0) : const Color(0xFFCFE1D5);
     final textColor = isDark ? Colors.white : const Color(0xFF111827);
     final hintColor = isDark ? Colors.white54 : const Color(0xFF6B7280);
+    final iconColor = isDark ? Colors.white70 : const Color(0xFF4B5563);
 
     return TextFormField(
       controller: controller,
@@ -32,11 +33,16 @@ class QuantityInputField extends StatelessWidget {
           color: hintColor,
           fontSize: 15,
         ),
+        prefixIcon: Icon(
+          Icons.format_list_numbered_rounded,
+          color: iconColor,
+          size: 20,
+        ),
         filled: true,
         fillColor: fillColor,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 18,
-          vertical: 18,
+          vertical: 14,
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(22),

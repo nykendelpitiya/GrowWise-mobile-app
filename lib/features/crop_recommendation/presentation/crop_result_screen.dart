@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:growwise_mobile_app/features/crop_recommendation/presentation/crop_recommendation_screen.dart';
 import 'package:growwise_mobile_app/features/home/presentation/home_screen.dart';
+import 'package:growwise_mobile_app/services/t_text.dart';
 
 class CropResultScreen extends StatelessWidget {
   final String crop;
@@ -76,12 +77,16 @@ class CropResultScreen extends StatelessWidget {
     }
 
     final messageBg = suitable
-        ? (isDark ? const Color(0xFF1F4D36) : const Color(0xFF50C878))
+        ? (isDark ? const Color(0xFF174A32) : const Color(0xFFD7FCE4))
         : (isDark ? const Color(0xFF3A2520) : const Color(0xFFFFF1E3));
 
     final messageBorder = suitable
-        ? primaryGreen
+        ? (isDark ? const Color(0xFF7ED957) : const Color(0xFF22C55E))
         : (isDark ? const Color(0xFF704438) : const Color(0xFFF3C59B));
+
+    final messageTextColor = suitable
+        ? (isDark ? const Color(0xFFEAF7EE) : const Color(0xFF064E3B))
+        : titleColor;
 
     final iconCircleBg = isDark ? const Color(0xFF111A24) : Colors.white;
     final outlinedButtonBg = isDark ? const Color(0xFF16212B) : Colors.white;
@@ -130,7 +135,7 @@ class CropResultScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              Text(
+              TText(
                 'Crop Recommendation Result',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -140,7 +145,7 @@ class CropResultScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 6),
-              Text(
+              TText(
                 'Final result for your selected crop and district.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -213,7 +218,7 @@ class CropResultScreen extends StatelessWidget {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(
+                                  TText(
                                     'Level',
                                     style: TextStyle(
                                       fontSize: 12,
@@ -224,7 +229,7 @@ class CropResultScreen extends StatelessWidget {
                                   const SizedBox(height: 8),
                                   FittedBox(
                                     fit: BoxFit.scaleDown,
-                                    child: Text(
+                                    child: TText(
                                       normalizedLevel,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
@@ -280,7 +285,7 @@ class CropResultScreen extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
+                                  TText(
                                     'Final Recommendation',
                                     style: TextStyle(
                                       fontSize: 12,
@@ -289,7 +294,7 @@ class CropResultScreen extends StatelessWidget {
                                     ),
                                   ),
                                   const SizedBox(height: 4),
-                                  Text(
+                                  TText(
                                     suitable ? 'Suitable' : 'Not Suitable',
                                     style: TextStyle(
                                       fontSize: 22,
@@ -315,30 +320,40 @@ class CropResultScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(
                             color: messageBorder,
-                            width: suitable ? 1.3 : 1.1,
+                            width: suitable ? 1.4 : 1.1,
                           ),
+                          boxShadow: suitable
+                              ? [
+                                  BoxShadow(
+                                    color: const Color(0xFF22C55E)
+                                        .withOpacity(isDark ? 0.12 : 0.18),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ]
+                              : [],
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            TText(
                               'Message',
                               style: TextStyle(
                                 fontSize: 11,
-                                color: subtitleColor,
+                                color: suitable ? messageTextColor : subtitleColor,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
                             const SizedBox(height: 5),
-                            Text(
+                            TText(
                               displayMessage,
                               maxLines: showAlternatives ? 2 : 3,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 fontSize: 12.5,
                                 height: 1.28,
-                                fontWeight: FontWeight.w500,
-                                color: titleColor,
+                                fontWeight: FontWeight.w600,
+                                color: messageTextColor,
                               ),
                             ),
                             if (showAlternatives) ...[
@@ -349,7 +364,7 @@ class CropResultScreen extends StatelessWidget {
                                   children: alternativeCrops.map((cropName) {
                                     return Padding(
                                       padding: const EdgeInsets.only(bottom: 3),
-                                      child: Text(
+                                      child: TText(
                                         '✅ $cropName',
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
@@ -388,15 +403,22 @@ class CropResultScreen extends StatelessWidget {
                                   color: outlinedButtonBorder,
                                   width: 1,
                                 ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 10,
+                                ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(28),
                                 ),
                                 backgroundColor: outlinedButtonBg,
                               ),
-                              child: Text(
+                              child: TText(
                                 'Try Again',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  fontSize: 13,
+                                  fontSize: 11.5,
                                   fontWeight: FontWeight.w600,
                                   color: titleColor,
                                 ),
@@ -420,14 +442,21 @@ class CropResultScreen extends StatelessWidget {
                                 elevation: 0,
                                 backgroundColor: primaryGreen,
                                 foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 10,
+                                ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(28),
                                 ),
                               ),
-                              child: const Text(
+                              child: const TText(
                                 'Back to Home',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  fontSize: 13,
+                                  fontSize: 11.5,
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
@@ -465,7 +494,7 @@ class CropResultScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          TText(
             title,
             style: TextStyle(
               fontSize: 11,
@@ -481,7 +510,7 @@ class CropResultScreen extends StatelessWidget {
                 ? FittedBox(
                     alignment: Alignment.centerLeft,
                     fit: BoxFit.scaleDown,
-                    child: Text(
+                    child: TText(
                       value,
                       style: TextStyle(
                         fontSize: 18,
@@ -490,7 +519,7 @@ class CropResultScreen extends StatelessWidget {
                       ),
                     ),
                   )
-                : Text(
+                : TText(
                     value,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -543,7 +572,7 @@ class CropResultScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 2),
-              Text(
+              TText(
                 'Confidence',
                 style: TextStyle(
                   fontSize: 10,

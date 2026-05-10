@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:growwise_mobile_app/services/t_text.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -187,7 +188,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void _showImagePlaceholder() {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Profile image update feature coming soon'),
+        content: TText('Profile image update feature coming soon'),
       ),
     );
   }
@@ -195,7 +196,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void _showSnackBar(String message, {bool isError = true}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message),
+        content: TText(message),
         backgroundColor: isError ? Colors.redAccent : Colors.green,
       ),
     );
@@ -208,15 +209,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final fillColor = isDark ? const Color(0xFF111827) : Colors.white;
-    final borderColor = isDark ? const Color(0xFF355C44) : const Color(0xFFBBF7D0);
-    final focusedBorderColor = isDark ? const Color(0xFF86EFAC) : const Color(0xFF077530);
+    final borderColor =
+        isDark ? const Color(0xFF355C44) : const Color(0xFFBBF7D0);
+    final focusedBorderColor =
+        isDark ? const Color(0xFF86EFAC) : const Color(0xFF077530);
     final textColor = isDark ? Colors.white : const Color(0xFF111827);
     final helperColor = isDark ? const Color(0xFFCBD5E1) : Colors.black45;
 
     return InputDecoration(
       labelText: label,
       labelStyle: TextStyle(color: textColor),
-      prefixIcon: Icon(icon, color: isDark ? const Color(0xFF86EFAC) : Colors.black45),
+      prefixIcon: Icon(
+        icon,
+        color: isDark ? const Color(0xFF86EFAC) : Colors.black45,
+      ),
       filled: true,
       fillColor: fillColor,
       contentPadding: const EdgeInsets.symmetric(
@@ -246,20 +252,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final screenBackground = isDark ? const Color(0xFF0B1220) : Colors.white;
-    final backIconColor = theme.iconTheme.color ?? (isDark ? Colors.white : Colors.black);
+    final backIconColor =
+        theme.iconTheme.color ?? (isDark ? Colors.white : Colors.black);
     final backTitleColor =
         theme.textTheme.bodyLarge?.color ?? (isDark ? Colors.white : Colors.black);
-    final borderColor = isDark ? const Color(0xFF355C44) : const Color(0xFFBBF7D0);
+    final borderColor =
+        isDark ? const Color(0xFF355C44) : const Color(0xFFBBF7D0);
     final cardBackground = isDark ? const Color(0xFF111827) : Colors.white;
     final titleColor = isDark ? Colors.white : const Color(0xFF111827);
-    final subtitleColor = isDark ? const Color(0xFFCBD5E1) : const Color(0xFF6B7280);
-    final previewAvatarBackground = isDark ? const Color(0xFF1F2937) : const Color(0xFFDCFCE7);
+    final subtitleColor =
+        isDark ? const Color(0xFFCBD5E1) : const Color(0xFF6B7280);
+    final previewAvatarBackground =
+        isDark ? const Color(0xFF1F2937) : const Color(0xFFDCFCE7);
     final dropdownMenuColor = isDark ? const Color(0xFF111827) : Colors.white;
     final dropdownTextColor = isDark ? Colors.white : const Color(0xFF111827);
 
     final previewName =
         _nameController.text.trim().isEmpty ? "User" : _nameController.text.trim();
-    final previewEmail = _emailController.text.trim().isEmpty ? "-" : _emailController.text.trim();
+    final previewEmail =
+        _emailController.text.trim().isEmpty ? "-" : _emailController.text.trim();
 
     return Scaffold(
       backgroundColor: screenBackground,
@@ -280,7 +291,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
             ),
             const SizedBox(width: 4),
-            Text(
+            TText(
               "Edit Profile",
               style: TextStyle(
                 fontSize: 14,
@@ -318,7 +329,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: isDark ? Colors.black.withOpacity(0.35) : Colors.black.withOpacity(0.035),
+                            color: isDark
+                                ? Colors.black.withOpacity(0.35)
+                                : Colors.black.withOpacity(0.035),
                             blurRadius: 14,
                             offset: const Offset(0, 6),
                           ),
@@ -374,7 +387,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
+                                TText(
                                   previewName,
                                   style: TextStyle(
                                     fontSize: 17.5,
@@ -411,7 +424,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          TText(
                             "Update your profile",
                             style: TextStyle(
                               fontSize: 16,
@@ -419,8 +432,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               color: titleColor,
                             ),
                           ),
-                          SizedBox(height: 6),
-                          Text(
+                          const SizedBox(height: 6),
+                          TText(
                             "Change your personal information here.",
                             style: TextStyle(
                               fontSize: 13,
@@ -467,7 +480,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           .map(
                             (district) => DropdownMenuItem(
                               value: district,
-                              child: Text(
+                              child: TText(
                                 district,
                                 style: TextStyle(color: dropdownTextColor),
                               ),
@@ -504,7 +517,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   color: Colors.white,
                                 ),
                               )
-                            : const Text(
+                            : const TText(
                                 'Save Changes',
                                 style: TextStyle(
                                   color: Colors.white,

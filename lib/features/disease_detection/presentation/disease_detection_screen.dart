@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:growwise_mobile_app/services/t_text.dart';
 
 class DiseaseDetectionScreen extends StatefulWidget {
   const DiseaseDetectionScreen({super.key});
@@ -156,7 +157,7 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(22),
           ),
-          title: Text(
+          title: TText(
             title,
             style: TextStyle(
               fontWeight: FontWeight.w900,
@@ -167,7 +168,7 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
               ? Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
+                    TText(
                       message,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
@@ -207,7 +208,7 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Text(
+                    TText(
                       message.trim().toLowerCase() == 'healthy'
                           ? 'Healthy confidence'
                           : confidence >= 70
@@ -221,7 +222,7 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
                     ),
                   ],
                 )
-              : Text(
+              : TText(
                   message,
                   style: const TextStyle(
                     fontSize: 16,
@@ -231,7 +232,7 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text(
+              child: TText(
                 'OK',
                 style: TextStyle(
                   fontWeight: FontWeight.w800,
@@ -288,7 +289,7 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
                 ),
               ),
               const SizedBox(height: 2),
-              Text(
+              TText(
                 'Disease Detection',
                 style: TextStyle(
                   fontSize: 22,
@@ -297,7 +298,7 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
                 ),
               ),
               const SizedBox(height: 5),
-              Text(
+              TText(
                 'Upload a clear full leaf image. Avoid blurry images.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -349,7 +350,7 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
                                 : [],
                           ),
                           child: Center(
-                            child: Text(
+                            child: TText(
                               plant,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -395,7 +396,7 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
                               color: primaryGreen,
                             ),
                             SizedBox(width: 8),
-                            Text(
+                            TText(
                               'Upload',
                               style: TextStyle(
                                 fontSize: 14,
@@ -444,7 +445,7 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
                               color: Colors.white,
                             ),
                             SizedBox(width: 8),
-                            Text(
+                            TText(
                               'Capture',
                               style: TextStyle(
                                 fontSize: 14,
@@ -503,7 +504,7 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
                                 ),
                               ),
                               const SizedBox(height: 10),
-                              Text(
+                              TText(
                                 'No image selected',
                                 style: TextStyle(
                                   fontSize: 14,
@@ -564,7 +565,7 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text(
+                            const TText(
                               'Detected Disease',
                               style: TextStyle(
                                 fontSize: 11,
@@ -573,7 +574,7 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
                               ),
                             ),
                             const SizedBox(height: 5),
-                            Text(
+                            TText(
                               detectedDisease!,
                               textAlign: TextAlign.center,
                               maxLines: 1,
@@ -613,7 +614,7 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
+                              TText(
                                 'Confidence',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -679,7 +680,7 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
                             color: Colors.white,
                           ),
                         )
-                      : const Text(
+                      : const TText(
                           'Detect Disease',
                           style: TextStyle(
                             fontSize: 16,

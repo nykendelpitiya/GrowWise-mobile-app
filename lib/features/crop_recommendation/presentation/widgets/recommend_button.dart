@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:growwise_mobile_app/services/t_text.dart';
 
 class RecommendButton extends StatelessWidget {
   final VoidCallback onTap;
@@ -23,7 +24,7 @@ class RecommendButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(18),
           ),
         ),
-        child: const Text(
+        child: const TText(
           'Get Recommendation',
           style: TextStyle(
             fontSize: 15,

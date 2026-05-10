@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:growwise_mobile_app/services/t_text.dart';
 
 class DistrictDropdownField extends StatelessWidget {
   final String? value;
@@ -23,68 +24,94 @@ class DistrictDropdownField extends StatelessWidget {
     final hintColor = isDark ? Colors.white54 : const Color(0xFF6B7280);
     final iconColor = isDark ? Colors.white70 : const Color(0xFF4B5563);
 
-    return DropdownButtonFormField<String>(
-      value: value,
-      isExpanded: true,
-      menuMaxHeight: 320,
-      borderRadius: BorderRadius.circular(20),
-      dropdownColor: isDark ? const Color(0xFF16212B) : Colors.white,
-      icon: Icon(
-        Icons.keyboard_arrow_down_rounded,
-        color: iconColor,
+    return Theme(
+      data: Theme.of(context).copyWith(
+        canvasColor: isDark ? const Color(0xFF16212B) : Colors.white,
       ),
-      style: TextStyle(
-        color: textColor,
-        fontSize: 15,
-        fontWeight: FontWeight.w500,
-      ),
-      decoration: InputDecoration(
-        hintText: 'Choose district',
-        hintStyle: TextStyle(
-          color: hintColor,
+      child: DropdownButtonFormField<String>(
+        value: value,
+        isExpanded: true,
+        menuMaxHeight: 320,
+        borderRadius: BorderRadius.circular(20),
+        dropdownColor: isDark ? const Color(0xFF16212B) : Colors.white,
+        icon: Icon(
+          Icons.keyboard_arrow_down_rounded,
+          color: iconColor,
+        ),
+        style: TextStyle(
+          color: textColor,
           fontSize: 15,
+          fontWeight: FontWeight.w500,
         ),
-        filled: true,
-        fillColor: fillColor,
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 18,
-          vertical: 18,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(22),
-          borderSide: BorderSide(
-            color: borderColor,
-            width: 1.3,
+        decoration: InputDecoration(
+          hintText: 'Choose district',
+          hintStyle: TextStyle(
+            color: hintColor,
+            fontSize: 15,
+          ),
+          filled: true,
+          fillColor: fillColor,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 18,
+            vertical: 14,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(22),
+            borderSide: BorderSide(
+              color: borderColor,
+              width: 1.3,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(22),
+            borderSide: const BorderSide(
+              color: Color(0xFF7ED957),
+              width: 1.7,
+            ),
+          ),
+          disabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(22),
+            borderSide: BorderSide(
+              color: borderColor,
+              width: 1.3,
+            ),
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(22),
           ),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(22),
-          borderSide: const BorderSide(
-            color: Color(0xFF7ED957),
-            width: 1.7,
-          ),
-        ),
-        disabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(22),
-          borderSide: BorderSide(
-            color: borderColor,
-            width: 1.3,
-          ),
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(22),
-        ),
+        items: items.map((district) {
+          return DropdownMenuItem<String>(
+            value: district,
+            child: TText(
+              district,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: textColor,
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          );
+        }).toList(),
+        onChanged: onChanged,
+        selectedItemBuilder: (context) {
+          return items.map((district) {
+            return Align(
+              alignment: Alignment.centerLeft,
+              child: TText(
+                district,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: textColor,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            );
+          }).toList();
+        },
       ),
-      items: items.map((district) {
-        return DropdownMenuItem<String>(
-          value: district,
-          child: Text(
-            district,
-            overflow: TextOverflow.ellipsis,
-          ),
-        );
-      }).toList(),
-      onChanged: onChanged,
     );
   }
 }

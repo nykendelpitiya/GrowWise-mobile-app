@@ -17,6 +17,22 @@ def pick_tip(tips):
     return random.choice(tips)
 
 
+def fallback_today_tip(city: str, reason: str = "fallback"):
+    return {
+        "title": "Today Tip",
+        "message": "Keep monitoring your plants daily and adjust care based on weather conditions.",
+        "alert": "normal",
+        "city": city,
+        "temperature": None,
+        "humidity": None,
+        "condition": "Unavailable",
+        "description": reason,
+        "rain_1h": 0,
+        "rain_3h": 0,
+        "has_water_today": False,
+        "has_fertilizer_today": False,
+    }
+
 
 def check_today_schedule(user_id: str):
     today_start = datetime.now(timezone.utc).replace(
@@ -40,7 +56,6 @@ def check_today_schedule(user_id: str):
         if not scheduled_at:
             continue
 
-        
         if not (today_start <= scheduled_at <= today_end):
             continue
 
@@ -59,12 +74,8 @@ def check_today_schedule(user_id: str):
 def get_today_tip(city: str, user_id: str = Query(...)):
     try:
         if not OPENWEATHER_API_KEY:
-            raise HTTPException(
-                status_code=500,
-                detail="OPENWEATHER_API_KEY not found",
-            )
+            return fallback_today_tip(city, "OPENWEATHER_API_KEY not found")
 
-        
         url = "https://api.openweathermap.org/data/2.5/weather"
 
         response = requests.get(
@@ -80,9 +91,9 @@ def get_today_tip(city: str, user_id: str = Query(...)):
         res = response.json()
 
         if response.status_code != 200:
-            raise HTTPException(
-                status_code=response.status_code,
-                detail=res.get("message", "Weather API error"),
+            return fallback_today_tip(
+                city,
+                res.get("message", "Weather API error"),
             )
 
         temp = float(res["main"]["temp"])
@@ -107,10 +118,7 @@ def get_today_tip(city: str, user_id: str = Query(...)):
             or rain_3h > 0
         )
 
-        
         has_water, has_fertilizer = check_today_schedule(user_id)
-
-       
 
         if is_rain:
             title = "Weather Alert"
@@ -189,8 +197,5 @@ def get_today_tip(city: str, user_id: str = Query(...)):
             "has_fertilizer_today": has_fertilizer,
         }
 
-    except HTTPException:
-        raise
-
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        return fallback_today_tip(city, str(e))

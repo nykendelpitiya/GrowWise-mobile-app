@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:growwise_mobile_app/services/api_service.dart';
 import 'package:growwise_mobile_app/services/care_store.dart';
+import 'package:growwise_mobile_app/services/t_text.dart';
 import 'package:growwise_mobile_app/features/dashboard/presentation/dashboard_screen.dart';
 import 'widgets/plant_dropdown_field.dart';
 import 'widgets/district_dropdown_field.dart';
@@ -156,7 +157,7 @@ class _CareInputScreenState extends State<CareInputScreen> {
   }
 
   Widget _sectionLabel(String text, bool isDark) {
-    return Text(
+    return TText(
       text,
       style: TextStyle(
         fontSize: 15,
@@ -204,7 +205,7 @@ class _CareInputScreenState extends State<CareInputScreen> {
                 ),
               ),
               const SizedBox(height: 8),
-              Text(
+              TText(
                 'Plant Care Setup',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -214,7 +215,7 @@ class _CareInputScreenState extends State<CareInputScreen> {
                 ),
               ),
               const SizedBox(height: 8),
-              Text(
+              TText(
                 'Register your plant details to save the care plan and view the schedule in your dashboard.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -234,6 +235,15 @@ class _CareInputScreenState extends State<CareInputScreen> {
                     color: cardBorder,
                     width: 1.2,
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(
+                        isDark ? 0.28 : 0.05,
+                      ),
+                      blurRadius: 16,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -308,8 +318,9 @@ class _CareInputScreenState extends State<CareInputScreen> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
+                          shadowColor: primaryGreen.withOpacity(0.28),
                         ),
-                        child: const Text(
+                        child: const TText(
                           'Save',
                           style: TextStyle(
                             fontSize: 16,

@@ -9,6 +9,8 @@ import 'package:growwise_mobile_app/features/profile/presentation/personal_detai
 import 'package:growwise_mobile_app/features/profile/presentation/edit_profile_screen.dart';
 import 'package:growwise_mobile_app/features/profile/presentation/change_password_screen.dart';
 import 'package:growwise_mobile_app/features/home/presentation/widgets/home_bottom_nav.dart';
+import 'package:growwise_mobile_app/services/t.dart';
+import 'package:growwise_mobile_app/services/t_text.dart';
 
 import 'widgets/profile_header.dart';
 import 'widgets/profile_section_title.dart';
@@ -114,7 +116,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void _onProfileImageTap() {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text("Profile image update feature coming soon"),
+        content: TText("Profile image update feature coming soon"),
       ),
     );
   }
@@ -126,10 +128,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() => notifications = value);
 
     try {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(currentUser.uid)
-          .set(
+      await FirebaseFirestore.instance.collection('users').doc(currentUser.uid).set(
         {
           'notifications': value,
         },
@@ -158,6 +157,194 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Navigator.pop(context);
   }
 
+  void _showLanguageDialog() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: isDark ? const Color(0xFF111827) : Colors.white,
+          insetPadding: const EdgeInsets.symmetric(horizontal: 30),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(26),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 22, 20, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  height: 52,
+                  width: 52,
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? const Color(0xFF1F2937)
+                        : const Color(0xFFEAF7EE),
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: const Color(0xFFBBF7D0),
+                      width: 1.2,
+                    ),
+                  ),
+                  child: const Icon(
+                    Icons.translate_rounded,
+                    color: Color(0xFF077530),
+                    size: 26,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TText(
+                  "Select Language",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    color: isDark ? Colors.white : const Color(0xFF111827),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                TText(
+                  "Choose your preferred app language",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 12.5,
+                    height: 1.35,
+                    color: isDark
+                        ? const Color(0xFFCBD5E1)
+                        : const Color(0xFF6B7280),
+                  ),
+                ),
+                const SizedBox(height: 18),
+                _languageOption(
+                  label: "English",
+                  value: "en",
+                  shortCode: "EN",
+                ),
+                const SizedBox(height: 10),
+                _languageOption(
+                  label: "සිංහල",
+                  value: "si",
+                  shortCode: "සි",
+                ),
+                const SizedBox(height: 10),
+                _languageOption(
+                  label: "தமிழ்",
+                  value: "ta",
+                  shortCode: "த",
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _languageOption({
+    required String label,
+    required String value,
+    required String shortCode,
+  }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final selected = T.instance.currentLanguage == value;
+
+    final cardColor = selected
+        ? (isDark ? const Color(0xFF12351F) : const Color(0xFFEAF7EE))
+        : (isDark ? const Color(0xFF1F2937) : const Color(0xFFF8FAFC));
+
+    final borderColor =
+        selected ? const Color(0xFF077530) : const Color(0xFFE5E7EB);
+
+    final textColor = selected
+        ? const Color(0xFF077530)
+        : (isDark ? Colors.white : const Color(0xFF111827));
+
+    final codeBg = selected
+        ? const Color(0xFF077530)
+        : (isDark ? const Color(0xFF111827) : Colors.white);
+
+    final codeColor = selected
+        ? Colors.white
+        : (isDark ? const Color(0xFF86EFAC) : const Color(0xFF077530));
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(18),
+      onTap: () {
+        setState(() {
+          T.instance.changeLanguage(value);
+        });
+
+        Navigator.pop(context);
+      },
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+        decoration: BoxDecoration(
+          color: cardColor,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(
+            color: borderColor,
+            width: selected ? 1.5 : 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              height: 36,
+              width: 36,
+              decoration: BoxDecoration(
+                color: codeBg,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: selected
+                      ? const Color(0xFF077530)
+                      : const Color(0xFFBBF7D0),
+                  width: 1,
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  shortCode,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w900,
+                    color: codeColor,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: TText(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+                  color: textColor,
+                ),
+              ),
+            ),
+            if (selected)
+              const Icon(
+                Icons.check_circle_rounded,
+                color: Color(0xFF077530),
+                size: 22,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _languageLabel() {
+    if (T.instance.currentLanguage == "si") return "සිංහල";
+    if (T.instance.currentLanguage == "ta") return "தமிழ்";
+    return "English";
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -167,6 +354,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         theme.iconTheme.color ?? (isDark ? Colors.white : Colors.black);
 
     final themeProvider = Provider.of<ThemeProvider>(context);
+    Provider.of<T>(context);
 
     return Scaffold(
       backgroundColor: screenBackground,
@@ -253,6 +441,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   onChanged: (v) {
                                     themeProvider.toggleTheme(v);
                                   },
+                                ),
+                                SizedBox(height: tileGap),
+                                ProfileMenuTile(
+                                  icon: Icons.language_rounded,
+                                  title: "Language  •  ${_languageLabel()}",
+                                  onTap: _showLanguageDialog,
                                 ),
                                 SizedBox(height: tileGap),
                                 ProfileSwitchTile(

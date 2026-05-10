@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:growwise_mobile_app/features/crop_recommendation/presentation/crop_result_screen.dart';
 import 'package:growwise_mobile_app/services/api_service.dart';
+import 'package:growwise_mobile_app/services/t_text.dart';
 import 'widgets/crop_dropdown_field.dart';
 import 'widgets/location_dropdown_field.dart';
 
@@ -161,7 +162,7 @@ class _CropRecommendationScreenState extends State<CropRecommendationScreen> {
                     ),
                   ),
                   const SizedBox(height: 14),
-                  Text(
+                  TText(
                     'Crop Recommendation',
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -171,7 +172,7 @@ class _CropRecommendationScreenState extends State<CropRecommendationScreen> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Text(
+                  TText(
                     'Select your crop and district to receive a smart suitability recommendation based on local conditions.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -194,8 +195,8 @@ class _CropRecommendationScreenState extends State<CropRecommendationScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Select Crop',
+                    TText(
+                      'Select Plant',
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
@@ -215,7 +216,7 @@ class _CropRecommendationScreenState extends State<CropRecommendationScreen> {
                             },
                     ),
                     const SizedBox(height: 24),
-                    Text(
+                    TText(
                       'Select District',
                       style: TextStyle(
                         fontSize: 15,
@@ -265,7 +266,7 @@ class _CropRecommendationScreenState extends State<CropRecommendationScreen> {
                               borderRadius: BorderRadius.circular(30),
                             ),
                           ),
-                          child: const Text(
+                          child: const TText(
                             'Get Recommendation',
                             style: TextStyle(
                               fontSize: 16,

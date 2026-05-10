@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:growwise_mobile_app/features/home/presentation/widgets/home_colors.dart';
+import 'package:growwise_mobile_app/services/t_text.dart';
 
 class FeatureCard extends StatefulWidget {
   final String iconPath;
@@ -95,7 +96,13 @@ class _FeatureCardState extends State<FeatureCard> {
             duration: const Duration(milliseconds: 180),
             curve: Curves.easeOut,
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            constraints: const BoxConstraints(
+              minHeight: 88,
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
             decoration: BoxDecoration(
               color: cardColor,
               borderRadius: BorderRadius.circular(18),
@@ -114,6 +121,7 @@ class _FeatureCardState extends State<FeatureCard> {
               ],
             ),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 180),
@@ -157,51 +165,58 @@ class _FeatureCardState extends State<FeatureCard> {
                 ),
                 const SizedBox(width: 14),
                 Expanded(
-                  child: SizedBox(
-                    height: 42,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 1),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
+                        TText(
                           widget.title,
-                          maxLines: 1,
+                          maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            fontSize: 15.5,
+                            fontSize: 15,
+                            height: 1.2,
                             fontWeight: FontWeight.w700,
                             color: titleColor,
                           ),
                         ),
-                        const SizedBox(height: 3),
-                        Text(
+                        const SizedBox(height: 4),
+                        TText(
                           widget.subtitle,
-                          maxLines: 1,
+                          maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            fontSize: 11.5,
+                            fontSize: 11.8,
                             color: subtitleColor,
-                            height: 1.2,
+                            height: 1.3,
                           ),
                         ),
                       ],
                     ),
                   ),
                 ),
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 180),
-                  height: 30,
-                  width: 30,
-                  decoration: BoxDecoration(
-                    color: _hovered
-                        ? const Color(0xFFDCFCE7)
-                        : Colors.transparent,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.arrow_forward_ios,
-                    size: 15,
-                    color: _hovered ? const Color(0xFF077530) : arrowColor,
+                const SizedBox(width: 8),
+                Padding(
+                  padding: const EdgeInsets.only(top: 6),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 180),
+                    height: 30,
+                    width: 30,
+                    decoration: BoxDecoration(
+                      color: _hovered
+                          ? const Color(0xFFDCFCE7)
+                          : Colors.transparent,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.arrow_forward_ios,
+                      size: 15,
+                      color: _hovered
+                          ? const Color(0xFF077530)
+                          : arrowColor,
+                    ),
                   ),
                 ),
               ],

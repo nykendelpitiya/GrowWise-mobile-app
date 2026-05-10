@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:growwise_mobile_app/services/t_text.dart';
 
 class CropDropdownField extends StatelessWidget {
   final String? value;
@@ -75,11 +76,36 @@ class CropDropdownField extends StatelessWidget {
             borderSide: BorderSide(color: borderColor, width: 1.2),
           ),
         ),
+        hint: TText(
+          'Choose crop',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            color: hintColor,
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+        selectedItemBuilder: (context) {
+          return items.map((crop) {
+            return TText(
+              crop,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: textColor,
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+              ),
+            );
+          }).toList();
+        },
         items: items.map((crop) {
           return DropdownMenuItem<String>(
             value: crop,
-            child: Text(
+            child: TText(
               crop,
+              maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 color: textColor,

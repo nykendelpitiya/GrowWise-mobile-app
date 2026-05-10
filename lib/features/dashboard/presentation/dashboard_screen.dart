@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:growwise_mobile_app/services/care_store.dart';
+import 'package:growwise_mobile_app/services/t_text.dart';
 import 'package:growwise_mobile_app/features/care_recommendation/presentation/care_result_screen.dart';
 import 'package:growwise_mobile_app/features/home/presentation/widgets/home_bottom_nav.dart';
 
@@ -55,7 +56,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     return Scaffold(
       backgroundColor: screenBg,
-     bottomNavigationBar: const HomeBottomNav(currentIndex: 1),
+      bottomNavigationBar: const HomeBottomNav(currentIndex: 1),
       body: SafeArea(
         child: FutureBuilder<List<Map<String, dynamic>>>(
           future: _schedulesFuture,
@@ -72,8 +73,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
               return Center(
                 child: Padding(
                   padding: const EdgeInsets.all(20),
-                  child: Text(
-                    'Failed to load schedules.\n${snapshot.error}',
+                  child: TText(
+                    'Failed to load schedules.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: titleColor,
@@ -110,7 +111,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                   const SizedBox(height: 12),
                   Center(
-                    child: Text(
+                    child: TText(
                       'Dashboard',
                       style: TextStyle(
                         fontSize: 22,
@@ -121,7 +122,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                   const SizedBox(height: 8),
                   Center(
-                    child: Text(
+                    child: TText(
                       'View and manage your saved plant care schedules.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -154,7 +155,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 : const Color(0xFF077530),
                           ),
                           const SizedBox(height: 14),
-                          Text(
+                          TText(
                             'No schedules yet',
                             style: TextStyle(
                               fontSize: 20,
@@ -163,7 +164,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                           ),
                           const SizedBox(height: 8),
-                          Text(
+                          TText(
                             'Saved plant care schedules will appear here.',
                             textAlign: TextAlign.center,
                             style: TextStyle(
@@ -241,7 +242,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Text(
+                                            TText(
                                               title,
                                               maxLines: 2,
                                               overflow: TextOverflow.ellipsis,
@@ -253,7 +254,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                               ),
                                             ),
                                             const SizedBox(height: 12),
-                                            Text(
+                                            TText(
                                               crop,
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
@@ -264,7 +265,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                               ),
                                             ),
                                             const SizedBox(height: 4),
-                                            Text(
+                                            TText(
                                               district,
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
@@ -346,7 +347,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                       ),
                                                     ],
                                             ),
-                                            child: Text(
+                                            child: TText(
                                               '$quantity plants',
                                               style: TextStyle(
                                                 fontSize: 12.5,
