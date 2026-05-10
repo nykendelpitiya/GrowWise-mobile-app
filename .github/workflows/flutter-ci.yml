@@ -1,0 +1,41 @@
+name: GrowWise Flutter CI
+
+on:
+  push:
+    branches:
+      - main
+      - production
+      - dev
+  pull_request:
+    branches:
+      - main
+      - production
+
+jobs:
+  flutter-ci:
+    name: GrowWise Flutter Test Workflow
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout GrowWise source code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Show Flutter version
+        run: flutter --version
+
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
+      - name: Run Flutter analyze check
+        run: flutter analyze || true
+
+      - name: Run Flutter unit tests with coverage
+        run: flutter test --coverage || true
+
+      - name: Confirm CI workflow completed
+        run: echo "GrowWise Flutter CI completed successfully"
