@@ -83,7 +83,7 @@ class LogoutButton extends StatelessWidget {
                               width: 1.2,
                             ),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
+                              borderRadius: BorderRadius.circular(24),
                             ),
                           ),
                           child: TText(
@@ -110,7 +110,7 @@ class LogoutButton extends StatelessWidget {
                             elevation: 0,
                             backgroundColor: const Color(0xFFEF4444),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
+                              borderRadius: BorderRadius.circular(24),
                             ),
                           ),
                           child: const TText(
@@ -145,7 +145,7 @@ class LogoutButton extends StatelessWidget {
           backgroundColor: const Color(0xFFEF4444),
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(30),
           ),
         ),
         child: const Row(

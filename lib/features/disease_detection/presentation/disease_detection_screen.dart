@@ -265,6 +265,15 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
     final confidenceColor =
         _getConfidenceColor(diseaseConfidence, disease: detectedDisease);
 
+    final diseaseBoxBg =
+        isDark ? const Color(0xFF16212B) : lightGreen;
+    final diseaseBoxBorder =
+        isDark ? const Color(0xFF2F6B46) : primaryGreen;
+    final diseaseBoxLabelColor =
+        isDark ? const Color(0xFF86EFAC) : resultTextGreen;
+    final diseaseBoxValueColor =
+        isDark ? Colors.white : resultTextGreen;
+
     return Scaffold(
       backgroundColor: bgColor,
       body: SafeArea(
@@ -548,10 +557,10 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
                         height: 74,
                         padding: const EdgeInsets.symmetric(horizontal: 14),
                         decoration: BoxDecoration(
-                          color: lightGreen,
+                          color: diseaseBoxBg,
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                            color: primaryGreen,
+                            color: diseaseBoxBorder,
                             width: 1.6,
                           ),
                           boxShadow: [
@@ -565,11 +574,11 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const TText(
+                            TText(
                               'Detected Disease',
                               style: TextStyle(
                                 fontSize: 11,
-                                color: resultTextGreen,
+                                color: diseaseBoxLabelColor,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -579,10 +588,10 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
                               textAlign: TextAlign.center,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w900,
-                                color: resultTextGreen,
+                                color: diseaseBoxValueColor,
                               ),
                             ),
                           ],
@@ -625,27 +634,13 @@ class _DiseaseDetectionScreenState extends State<DiseaseDetectionScreen> {
                                 ),
                               ),
                               const SizedBox(height: 5),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 11,
-                                  vertical: 5,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: confidenceColor.withOpacity(0.10),
-                                  borderRadius: BorderRadius.circular(18),
-                                  border: Border.all(
-                                    color: confidenceColor,
-                                    width: 1.4,
-                                  ),
-                                ),
-                                child: Text(
-                                  '${diseaseConfidence!.toStringAsFixed(1)}%',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w900,
-                                    color: confidenceColor,
-                                  ),
+                              Text(
+                                '${diseaseConfidence!.toStringAsFixed(1)}%',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w900,
+                                  color: confidenceColor,
                                 ),
                               ),
                             ],

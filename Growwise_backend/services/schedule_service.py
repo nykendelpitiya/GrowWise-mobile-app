@@ -25,6 +25,7 @@ def create_schedule_notifications(
     water_total_per_day: float,
     fertilizer_total_per_week: dict,
     splits_per_year: int,
+    schedule_id: str | None = None,
 ):
     if not user_id:
         raise ValueError("user_id is required")
@@ -36,10 +37,8 @@ def create_schedule_notifications(
     plant_date = _to_utc_datetime(planting_date).date()
     today = now.date()
 
-    
     start_date = max(plant_date, today)
 
-    
     if start_date == today:
         base_date = now + timedelta(minutes=5)
     else:
@@ -49,14 +48,15 @@ def create_schedule_notifications(
             tzinfo=timezone.utc,
         )
 
-    schedule_id = (
-        f"{user_id}_{crop_clean.lower().replace(' ', '_')}_"
-        f"{district_clean.lower().replace(' ', '_')}_{str(planting_date)}"
-    )
+    if not schedule_id:
+        schedule_id = (
+            f"{user_id}_{crop_clean.lower().replace(' ', '_')}_"
+            f"{district_clean.lower().replace(' ', '_')}_{str(planting_date)}"
+        )
 
-   
     existing = (
         db.collection("notifications")
+        .where("userId", "==", user_id)
         .where("scheduleId", "==", schedule_id)
         .limit(1)
         .stream()
@@ -72,7 +72,6 @@ def create_schedule_notifications(
     batch = db.batch()
     created_count = 0
 
-   
     for day in range(30):
         scheduled_at = base_date + timedelta(days=day)
 
@@ -92,6 +91,7 @@ def create_schedule_notifications(
             "district": district_clean,
             "quantity": quantity,
             "plantingDate": str(planting_date),
+            "planting_date": str(planting_date),
             "scheduledAt": scheduled_at,
             "sent": False,
             "isRead": False,
@@ -99,7 +99,6 @@ def create_schedule_notifications(
         })
         created_count += 1
 
-   
     splits_per_year = max(1, int(splits_per_year))
     interval_days = max(1, 365 // splits_per_year)
 
@@ -126,6 +125,7 @@ def create_schedule_notifications(
             "district": district_clean,
             "quantity": quantity,
             "plantingDate": str(planting_date),
+            "planting_date": str(planting_date),
             "scheduledAt": scheduled_at,
             "sent": False,
             "isRead": False,

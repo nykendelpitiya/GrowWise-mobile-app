@@ -227,7 +227,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(height: 12),
                       FeatureCard(
                         iconPath: "assets/icons/care.png",
-                        title: "Plant Care",
+                        title: "Smart Care Guidance",
                         subtitle: "Water and fertilizer guidance",
                         onTap: () {
                           Navigator.push(

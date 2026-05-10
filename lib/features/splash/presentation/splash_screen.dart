@@ -34,7 +34,7 @@ class _SplashScreenState extends State<SplashScreen>
     _controller.forward();
 
     // Navigate after delay
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 4), () {
       if (mounted) {
         Navigator.pushReplacement(
           context,
@@ -66,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen>
              
               Image.asset(
                 "assets/images/growwise_logo.png",
-                width: 250,
+                width: 300,
               ),
 
               const SizedBox(height: 16),

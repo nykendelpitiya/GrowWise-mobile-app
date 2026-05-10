@@ -65,6 +65,18 @@ class _CareInputScreenState extends State<CareInputScreen> {
     super.dispose();
   }
 
+  String _buildScheduleId({
+    required String userId,
+    required String crop,
+    required String district,
+    required String plantingDate,
+  }) {
+    final cropClean = crop.trim().toLowerCase().replaceAll(' ', '_');
+    final districtClean = district.trim().toLowerCase().replaceAll(' ', '_');
+
+    return '${userId}_${cropClean}_${districtClean}_$plantingDate';
+  }
+
   Future<void> _pickPlantingDate() async {
     final now = DateTime.now();
 
@@ -117,13 +129,26 @@ class _CareInputScreenState extends State<CareInputScreen> {
     });
 
     try {
+      final plantingDate = DateFormat('yyyy-MM-dd').format(selectedPlantingDate!);
+
+      final scheduleId = _buildScheduleId(
+        userId: user.uid,
+        crop: selectedCrop!,
+        district: selectedDistrict!,
+        plantingDate: plantingDate,
+      );
+
       final result = await ApiService.predictCareRecommendation(
         userId: user.uid,
         crop: selectedCrop!,
         district: selectedDistrict!,
-        plantingDate: DateFormat('yyyy-MM-dd').format(selectedPlantingDate!),
+        plantingDate: plantingDate,
         quantity: quantity,
+        scheduleId: scheduleId,
       );
+
+      result['schedule_id'] = scheduleId;
+      result['scheduleId'] = scheduleId;
 
       await CareStore.saveSchedule(
         title: '${selectedCrop!} Schedule',
