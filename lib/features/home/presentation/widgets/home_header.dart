@@ -3,6 +3,7 @@ import 'home_colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:growwise_mobile_app/features/notifications/presentation/notification_screen.dart';
+import 'package:growwise_mobile_app/services/t_text.dart';
 
 class HomeHeader extends StatelessWidget {
   final Color? titleColor;
@@ -14,7 +15,7 @@ class HomeHeader extends StatelessWidget {
     this.subtitleColor,
   });
 
-  /// 🔥 GET UNREAD COUNT
+ 
   Stream<int> getUnreadCount() {
     final user = FirebaseAuth.instance.currentUser;
 
@@ -50,7 +51,7 @@ class HomeHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    /// 🔥 GET USER NAME
+    
     final user = FirebaseAuth.instance.currentUser;
 
     final fullName =
@@ -58,7 +59,7 @@ class HomeHeader extends StatelessWidget {
 
     final firstName = fullName.trim().split(' ').first;
 
-    /// 🔥 AUTO DARK MODE COLORS (fallback)
+    
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final finalTitleColor =
@@ -68,32 +69,42 @@ class HomeHeader extends StatelessWidget {
         subtitleColor ?? (isDark ? Colors.white70 : kTextLight);
 
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Hello, $firstName",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
-                  color: finalTitleColor,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TText(
+                  "Hello, $firstName",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 21,
+                    height: 1.15,
+                    fontWeight: FontWeight.w700,
+                    color: finalTitleColor,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                "Welcome back to GrowWise",
-                style: TextStyle(
-                  fontSize: 13,
-                  color: finalSubtitleColor,
+                const SizedBox(height: 4),
+                TText(
+                  "Welcome back to GrowWise!",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 12,
+                    height: 1.2,
+                    color: finalSubtitleColor,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
 
-        /// 🔔 NOTIFICATION ICON + COUNT BADGE
+        
         StreamBuilder<int>(
           stream: getUnreadCount(),
           builder: (context, snapshot) {
@@ -145,7 +156,7 @@ class HomeHeader extends StatelessWidget {
                     ),
                   ),
 
-                  /// 🔴 REAL COUNT BADGE
+                
                   if (count > 0)
                     Positioned(
                       right: -4,

@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:growwise_mobile_app/services/t_text.dart';
 
 class WeatherSummaryCard extends StatefulWidget {
   final String city;
@@ -112,15 +113,9 @@ class _WeatherSummaryCardState extends State<WeatherSummaryCard> {
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 500),
-
-     
       height: 140,
-
       width: double.infinity,
-
-      
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: getWeatherGradient(condition),
@@ -163,7 +158,7 @@ class _WeatherSummaryCardState extends State<WeatherSummaryCard> {
                           ),
                           const SizedBox(width: 4),
                           Expanded(
-                            child: Text(
+                            child: TText(
                               "${widget.city}, Sri Lanka",
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
@@ -215,7 +210,7 @@ class _WeatherSummaryCardState extends State<WeatherSummaryCard> {
 
                       const SizedBox(height: 8),
 
-                      Text(
+                      TText(
                         getConditionText(condition),
                         style: const TextStyle(
                           color: Colors.white,
@@ -229,7 +224,6 @@ class _WeatherSummaryCardState extends State<WeatherSummaryCard> {
 
                 const SizedBox(width: 12),
 
-                
                 ClipRRect(
                   borderRadius: BorderRadius.circular(18),
                   child: BackdropFilter(

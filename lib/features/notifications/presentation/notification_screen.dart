@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:growwise_mobile_app/services/t_text.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
@@ -64,7 +65,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
       body: SafeArea(
         child: user == null
             ? Center(
-                child: Text(
+                child: TText(
                   "User not logged in",
                   style: TextStyle(color: subtitleColor),
                 ),
@@ -171,7 +172,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                       bottom: 8,
                                       left: 4,
                                     ),
-                                    child: Text(
+                                    child: TText(
                                       entry.key,
                                       style: TextStyle(
                                         color: subtitleColor,
@@ -245,7 +246,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
+                    TText(
                       "Notifications",
                       style: TextStyle(
                         color: titleColor,
@@ -302,7 +303,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   CheckedPopupMenuItem(
                     value: "all",
                     checked: selectedStatus == "All",
-                    child: const Text(
+                    child: const TText(
                       "Show all",
                       style: TextStyle(color: Colors.black),
                     ),
@@ -310,7 +311,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   CheckedPopupMenuItem(
                     value: "unread",
                     checked: selectedStatus == "Unread",
-                    child: const Text(
+                    child: const TText(
                       "Show unread",
                       style: TextStyle(color: Colors.black),
                     ),
@@ -318,7 +319,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   CheckedPopupMenuItem(
                     value: "important",
                     checked: selectedStatus == "Important",
-                    child: const Text(
+                    child: const TText(
                       "Show important",
                       style: TextStyle(color: Colors.black),
                     ),
@@ -331,7 +332,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         Icon(Icons.done_all_rounded,
                             size: 18, color: Colors.black87),
                         SizedBox(width: 8),
-                        Text(
+                        TText(
                           "Mark all as read",
                           style: TextStyle(color: Colors.black),
                         ),
@@ -345,7 +346,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         Icon(Icons.delete_outline_rounded,
                             size: 18, color: Colors.black87),
                         SizedBox(width: 8),
-                        Text(
+                        TText(
                           "Clear due notifications",
                           style: TextStyle(color: Colors.black),
                         ),
@@ -385,7 +386,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   color: selected ? primaryGreen : const Color(0xFFE5E7EB),
                 ),
               ),
-              child: Text(
+              child: TText(
                 item,
                 style: TextStyle(
                   color: selected ? Colors.white : const Color(0xFF111827),
@@ -434,7 +435,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
           children: [
             Icon(Icons.done_rounded, color: Colors.white),
             SizedBox(width: 8),
-            Text(
+            TText(
               "Mark read",
               style: TextStyle(
                 color: Colors.white,
@@ -455,7 +456,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         child: const Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Text(
+            TText(
               "Delete",
               style: TextStyle(
                 color: Colors.white,
@@ -488,7 +489,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
           if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text("$type notification opened"),
+              content: TText("$type notification opened"),
               backgroundColor: primaryGreen,
               duration: const Duration(seconds: 1),
             ),
@@ -544,7 +545,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                               ),
                             ),
                           Expanded(
-                            child: Text(
+                            child: TText(
                               title,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -589,7 +590,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                               color: typeStyle.iconBgColor,
                               borderRadius: BorderRadius.circular(20),
                             ),
-                            child: Text(
+                            child: TText(
                               type,
                               style: TextStyle(
                                 fontSize: 10,
@@ -670,7 +671,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
           children: [
             Icon(icon, size: 46, color: color.withOpacity(0.7)),
             const SizedBox(height: 12),
-            Text(
+            TText(
               title,
               style: TextStyle(
                 color: color,
@@ -679,7 +680,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
               ),
             ),
             const SizedBox(height: 6),
-            Text(
+            TText(
               subtitle,
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -876,7 +877,7 @@ class _ExpandableTextState extends State<ExpandableText> {
           expanded = !expanded;
         });
       },
-      child: Text(
+      child: TText(
         widget.text,
         maxLines: expanded ? null : 2,
         overflow: expanded ? TextOverflow.visible : TextOverflow.ellipsis,

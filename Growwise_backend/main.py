@@ -15,6 +15,7 @@ from services.diseases_detection import predict_disease
 
 from routes.today_tip import router as today_tip_router
 from routes.notification import router as notification_router
+from routes.translate_route import router as translate_router
 
 from scheduler import start_scheduler
 
@@ -42,6 +43,7 @@ def start_daily_scheduler():
 
 app.include_router(today_tip_router)
 app.include_router(notification_router)
+app.include_router(translate_router)
 
 
 # ================================
@@ -90,18 +92,28 @@ def predict_care(data: CareRequest):
             quantity=data.quantity,
         )
 
-        notification_result = create_schedule_notifications(
-            user_id=data.user_id,
-            crop=result["crop"],
-            district=result["district"],
-            planting_date=data.planting_date,
-            quantity=data.quantity,
-            water_total_per_day=result["water_total_per_day"],
-            fertilizer_total_per_week=result["fertilizer_total_per_week"],
-            splits_per_year=result["schedule"]["splits_per_year"],
-        )
+        try:
+            notification_result = create_schedule_notifications(
+                user_id=data.user_id,
+                crop=result["crop"],
+                district=result["district"],
+                planting_date=data.planting_date,
+                quantity=data.quantity,
+                water_total_per_day=result["water_total_per_day"],
+                fertilizer_total_per_week=result["fertilizer_total_per_week"],
+                splits_per_year=result["schedule"]["splits_per_year"],
+            )
 
-        result["notification_schedule"] = notification_result
+            result["notification_schedule"] = notification_result
+
+        except Exception as e:
+            print("⚠️ Notification schedule creation failed:", e)
+
+            result["notification_schedule"] = {
+                "success": False,
+                "message": "Care recommendation generated, but notification schedule could not be saved.",
+                "error": str(e),
+            }
 
         return result
 

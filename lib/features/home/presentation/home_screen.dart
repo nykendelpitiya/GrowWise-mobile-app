@@ -13,6 +13,7 @@ import 'package:growwise_mobile_app/features/home/presentation/widgets/home_head
 import 'package:growwise_mobile_app/features/home/presentation/widgets/today_tip_card.dart';
 import 'package:growwise_mobile_app/features/home/presentation/widgets/weather_summary_card.dart';
 import 'package:growwise_mobile_app/services/today_tip_api_service.dart';
+import 'package:growwise_mobile_app/services/t_text.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -196,8 +197,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   const SizedBox(height: 14),
 
-                  Text(
-                    "Plant Insight AI",
+                  TText(
+                    "Main Features",
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,

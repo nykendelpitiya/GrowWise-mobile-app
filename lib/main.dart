@@ -7,6 +7,7 @@ import 'package:growwise_mobile_app/core/theme/theme_provider.dart';
 import 'package:growwise_mobile_app/features/splash/presentation/splash_screen.dart';
 import 'package:growwise_mobile_app/firebase_options.dart';
 import 'package:growwise_mobile_app/services/fcm_service.dart';
+import 'package:growwise_mobile_app/services/t.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,8 +23,15 @@ Future<void> main() async {
   }
 
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => ThemeProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => ThemeProvider(),
+        ),
+        ChangeNotifierProvider.value(
+          value: T.instance,
+        ),
+      ],
       child: const GrowWiseApp(),
     ),
   );
@@ -35,6 +43,7 @@ class GrowWiseApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+    Provider.of<T>(context);
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,

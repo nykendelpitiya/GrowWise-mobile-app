@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:growwise_mobile_app/services/t_text.dart';
 
 class PlantingDateField extends StatelessWidget {
   final String value;
@@ -42,7 +43,7 @@ class PlantingDateField extends StatelessWidget {
             fillColor: fillColor,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 18,
-              vertical: 18,
+              vertical: 14,
             ),
             suffixIcon: Icon(
               Icons.calendar_today_rounded,

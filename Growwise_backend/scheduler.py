@@ -14,6 +14,7 @@ def send_due_notifications():
             db.collection("notifications")
             .where("sent", "==", False)
             .where("scheduledAt", "<=", now)
+            .limit(20)
             .stream()
         )
 
@@ -29,7 +30,11 @@ def send_due_notifications():
                 print("⚠️ Missing userId:", notification_id)
                 continue
 
-            user_doc = db.collection("users").document(user_id).get()
+            try:
+                user_doc = db.collection("users").document(user_id).get()
+            except Exception as e:
+                print("⚠️ Failed to read user:", user_id, e)
+                continue
 
             if not user_doc.exists:
                 print("⚠️ User not found:", user_id)
@@ -60,19 +65,29 @@ def send_due_notifications():
 
                 response = messaging.send(message)
 
-                db.collection("notifications").document(notification_id).update({
-                    "sent": True,
-                    "sentAt": datetime.now(timezone.utc),
-                    "response": str(response),
-                })
+                try:
+                    db.collection("notifications").document(notification_id).update({
+                        "sent": True,
+                        "sentAt": datetime.now(timezone.utc),
+                        "response": str(response),
+                    })
+                except Exception as e:
+                    print("⚠️ Failed to update sent status:", notification_id, e)
 
                 print("✅ Due notification sent:", user_id, title)
 
             except Exception as e:
-                db.collection("notifications").document(notification_id).update({
-                    "sendError": str(e),
-                    "lastTriedAt": datetime.now(timezone.utc),
-                })
+                try:
+                    db.collection("notifications").document(notification_id).update({
+                        "sendError": str(e),
+                        "lastTriedAt": datetime.now(timezone.utc),
+                    })
+                except Exception as update_error:
+                    print(
+                        "⚠️ Failed to update send error:",
+                        notification_id,
+                        update_error,
+                    )
 
                 print("❌ Send failed:", user_id, e)
 
@@ -88,9 +103,11 @@ def start_scheduler():
         scheduler.add_job(
             send_due_notifications,
             trigger="interval",
-            minutes=5,
+            hours=6,
             id="send_due_notifications",
             replace_existing=True,
+            max_instances=1,
+            coalesce=True,
         )
 
         scheduler.start()

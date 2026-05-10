@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:growwise_mobile_app/services/t_text.dart';
 
 class LogoutButton extends StatelessWidget {
   final VoidCallback onTap;
@@ -13,9 +14,12 @@ class LogoutButton extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
     final dialogBackground = isDark ? const Color(0xFF111827) : Colors.white;
     final titleColor = isDark ? Colors.white : const Color(0xFF111827);
-    final subtitleColor = isDark ? const Color(0xFFCBD5E1) : const Color(0xFF6B7280);
-    final borderColor = isDark ? const Color(0xFF355C44) : const Color(0xFFE5E7EB);
-    final dangerSurface = isDark ? const Color(0xFF2A1620) : const Color(0xFFFEE2E2);
+    final subtitleColor =
+        isDark ? const Color(0xFFCBD5E1) : const Color(0xFF6B7280);
+    final borderColor =
+        isDark ? const Color(0xFF355C44) : const Color(0xFFE5E7EB);
+    final dangerSurface =
+        isDark ? const Color(0xFF2A1620) : const Color(0xFFFEE2E2);
 
     showDialog(
       context: context,
@@ -46,7 +50,7 @@ class LogoutButton extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                Text(
+                TText(
                   'Logout',
                   style: TextStyle(
                     fontSize: 22,
@@ -55,7 +59,7 @@ class LogoutButton extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Text(
+                TText(
                   'Are you sure you want to logout from your account?',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -82,7 +86,7 @@ class LogoutButton extends StatelessWidget {
                               borderRadius: BorderRadius.circular(14),
                             ),
                           ),
-                          child: Text(
+                          child: TText(
                             'Cancel',
                             style: TextStyle(
                               color: titleColor,
@@ -109,7 +113,7 @@ class LogoutButton extends StatelessWidget {
                               borderRadius: BorderRadius.circular(14),
                             ),
                           ),
-                          child: const Text(
+                          child: const TText(
                             'Yes, Logout',
                             style: TextStyle(
                               color: Colors.white,
@@ -153,7 +157,7 @@ class LogoutButton extends StatelessWidget {
               size: 20,
             ),
             SizedBox(width: 8),
-            Text(
+            TText(
               'Logout',
               style: TextStyle(
                 color: Colors.white,

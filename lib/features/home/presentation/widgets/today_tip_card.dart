@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:growwise_mobile_app/services/t_text.dart';
 
 class TodayTipCard extends StatelessWidget {
   final String title;
@@ -85,7 +86,7 @@ class TodayTipCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   isRain ? "Weather Alert" : title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -96,7 +97,7 @@ class TodayTipCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
+                TText(
                   message,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -120,7 +121,7 @@ class TodayTipCard extends StatelessWidget {
               color: iconColor.withOpacity(0.12),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Text(
+            child: TText(
               isRain ? "Alert" : "Tip",
               style: TextStyle(
                 fontSize: 10,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:growwise_mobile_app/services/t_text.dart';
 
 class CareResultScreen extends StatelessWidget {
   final Map<String, dynamic> result;
@@ -80,7 +81,7 @@ class CareResultScreen extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               Center(
-                child: Text(
+                child: TText(
                   'Care Schedule',
                   style: TextStyle(
                     fontSize: 22,
@@ -91,7 +92,7 @@ class CareResultScreen extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Center(
-                child: Text(
+                child: TText(
                   'Simple and clear guidance for your plant care.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -235,7 +236,7 @@ class CareResultScreen extends StatelessWidget {
                           size: 20,
                         ),
                         const SizedBox(width: 8),
-                        Text(
+                        TText(
                           'Important',
                           style: TextStyle(
                             fontSize: 14,
@@ -384,7 +385,7 @@ class CareResultScreen extends StatelessWidget {
   }
 
   Widget _sectionTitle(String text, Color color) {
-    return Text(
+    return TText(
       text,
       style: TextStyle(
         fontSize: 18,
@@ -407,7 +408,7 @@ class CareResultScreen extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(
+            child: TText(
               text,
               style: TextStyle(
                 fontSize: 13.5,
@@ -433,7 +434,7 @@ class CareResultScreen extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: Text(
+            child: TText(
               label,
               style: TextStyle(
                 fontSize: 13,

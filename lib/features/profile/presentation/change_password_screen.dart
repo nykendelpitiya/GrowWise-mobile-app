@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:growwise_mobile_app/services/t_text.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
@@ -114,7 +115,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   void _showSnackBar(String message, {bool isError = true}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message),
+        content: TText(message),
         backgroundColor: isError ? Colors.redAccent : Colors.green,
       ),
     );
@@ -129,15 +130,20 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final fillColor = isDark ? const Color(0xFF111827) : Colors.white;
-    final borderColor = isDark ? const Color(0xFF355C44) : const Color(0xFFBBF7D0);
-    final focusedBorderColor = isDark ? const Color(0xFF86EFAC) : const Color(0xFF077530);
+    final borderColor =
+        isDark ? const Color(0xFF355C44) : const Color(0xFFBBF7D0);
+    final focusedBorderColor =
+        isDark ? const Color(0xFF86EFAC) : const Color(0xFF077530);
     final textColor = isDark ? Colors.white : const Color(0xFF111827);
     final helperColor = isDark ? const Color(0xFFCBD5E1) : Colors.black45;
 
     return InputDecoration(
       labelText: label,
       labelStyle: TextStyle(color: textColor),
-      prefixIcon: Icon(icon, color: isDark ? const Color(0xFF86EFAC) : Colors.black45),
+      prefixIcon: Icon(
+        icon,
+        color: isDark ? const Color(0xFF86EFAC) : Colors.black45,
+      ),
       suffixIcon: IconButton(
         onPressed: onToggle,
         icon: Icon(
@@ -173,13 +179,16 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final screenBackground = isDark ? const Color(0xFF0B1220) : Colors.white;
-    final backIconColor = theme.iconTheme.color ?? (isDark ? Colors.white : Colors.black);
+    final backIconColor =
+        theme.iconTheme.color ?? (isDark ? Colors.white : Colors.black);
     final backTitleColor =
         theme.textTheme.bodyLarge?.color ?? (isDark ? Colors.white : Colors.black);
-    final borderColor = isDark ? const Color(0xFF355C44) : const Color(0xFFBBF7D0);
+    final borderColor =
+        isDark ? const Color(0xFF355C44) : const Color(0xFFBBF7D0);
     final cardBackground = isDark ? const Color(0xFF111827) : Colors.white;
     final titleColor = isDark ? Colors.white : const Color(0xFF111827);
-    final subtitleColor = isDark ? const Color(0xFFCBD5E1) : const Color(0xFF6B7280);
+    final subtitleColor =
+        isDark ? const Color(0xFFCBD5E1) : const Color(0xFF6B7280);
 
     if (!isPasswordUser) {
       return Scaffold(
@@ -201,7 +210,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 ),
               ),
               const SizedBox(width: 4),
-              Text(
+              TText(
                 "Change Password",
                 style: TextStyle(
                   fontSize: 14,
@@ -215,16 +224,16 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           foregroundColor: isDark ? Colors.white : Colors.black,
           elevation: 0,
         ),
-        body: const SafeArea(
+        body: SafeArea(
           child: Center(
             child: Padding(
-              padding: EdgeInsets.all(24),
-              child: Text(
+              padding: const EdgeInsets.all(24),
+              child: TText(
                 "This account uses Google Sign-In. Password change is not available for this sign-in method.",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 15,
-                  color: Colors.black87,
+                  color: isDark ? Colors.white70 : Colors.black87,
                   height: 1.5,
                 ),
               ),
@@ -253,7 +262,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               ),
             ),
             const SizedBox(width: 4),
-            Text(
+            TText(
               "Change Password",
               style: TextStyle(
                 fontSize: 14,
@@ -285,7 +294,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: isDark ? Colors.black.withOpacity(0.35) : Colors.black.withOpacity(0.035),
+                      color: isDark
+                          ? Colors.black.withOpacity(0.35)
+                          : Colors.black.withOpacity(0.035),
                       blurRadius: 14,
                       offset: const Offset(0, 6),
                     ),
@@ -294,7 +305,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    TText(
                       "Update your password",
                       style: TextStyle(
                         fontSize: 16,
@@ -303,7 +314,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       ),
                     ),
                     const SizedBox(height: 6),
-                    Text(
+                    TText(
                       "Enter your current password and set a new secure password.",
                       style: TextStyle(
                         fontSize: 13,
@@ -375,7 +386,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             color: Colors.white,
                           ),
                         )
-                      : const Text(
+                      : const TText(
                           "Update Password",
                           style: TextStyle(
                             color: Colors.white,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:growwise_mobile_app/features/dashboard/presentation/dashboard_screen.dart';
 import 'home_colors.dart';
 import 'package:growwise_mobile_app/features/profile/presentation/profile_screen.dart';
+import 'package:growwise_mobile_app/services/t_text.dart';
 
 class HomeBottomNav extends StatelessWidget {
   final int currentIndex;
@@ -17,9 +18,9 @@ class HomeBottomNav extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return SafeArea(
-      minimum: const EdgeInsets.fromLTRB(18, 0, 18, 10),
+      minimum: const EdgeInsets.fromLTRB(18, 0, 18, 8),
       child: SizedBox(
-        height: 78,
+        height: 82,
         child: Stack(
           alignment: Alignment.bottomCenter,
           children: [
@@ -55,7 +56,7 @@ class HomeBottomNav extends StatelessWidget {
                       _NavItem(
                         icon: Icons.home_rounded,
                         label: "Home",
-                        active: false,
+                        active: currentIndex == 0,
                         onTap: () {
                           if (currentIndex == 0) return;
 
@@ -65,7 +66,7 @@ class HomeBottomNav extends StatelessWidget {
                       _NavItem(
                         icon: Icons.dashboard_rounded,
                         label: "Dashboard",
-                        active: false,
+                        active: currentIndex == 1,
                         onTap: () {
                           if (currentIndex == 1) return;
 
@@ -80,7 +81,7 @@ class HomeBottomNav extends StatelessWidget {
                       _NavItem(
                         icon: Icons.person_rounded,
                         label: "Profile",
-                        active: false,
+                        active: currentIndex == 2,
                         onTap: () {
                           if (currentIndex == 2) return;
 
@@ -97,7 +98,6 @@ class HomeBottomNav extends StatelessWidget {
                 ),
               ),
             ),
-
             Positioned(
               left: currentIndex == 0 ? 12 : null,
               top: 0,
@@ -109,7 +109,6 @@ class HomeBottomNav extends StatelessWidget {
                     )
                   : const SizedBox.shrink(),
             ),
-
             Positioned(
               top: 0,
               child: currentIndex == 1
@@ -120,7 +119,6 @@ class HomeBottomNav extends StatelessWidget {
                     )
                   : const SizedBox.shrink(),
             ),
-
             Positioned(
               right: 12,
               top: 0,
@@ -155,9 +153,10 @@ class _ActiveNavItem extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: SizedBox(
-        width: 86,
-        height: 76,
+        width: 88,
+        height: 80,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               height: 54,
@@ -198,13 +197,20 @@ class _ActiveNavItem extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 3),
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 10.5,
-                fontWeight: FontWeight.w800,
-                color: kPrimaryGreenDark,
+            const SizedBox(height: 1),
+            SizedBox(
+              width: 82,
+              child: TText(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 8.5,
+                  height: 1.0,
+                  fontWeight: FontWeight.w800,
+                  color: kPrimaryGreenDark,
+                ),
               ),
             ),
           ],
@@ -229,12 +235,17 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (active) {
+      return const SizedBox(
+        width: 74,
+        height: 54,
+      );
+    }
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final inactiveColor =
         isDark ? const Color(0xFF94A3B8) : const Color(0xFF94A3B8);
-
-    final activeColor = isDark ? const Color(0xFF7ED957) : kPrimaryGreenDark;
 
     return GestureDetector(
       onTap: onTap,
@@ -247,17 +258,22 @@ class _NavItem extends StatelessWidget {
             Icon(
               icon,
               size: 22,
-              color: active ? activeColor : inactiveColor,
+              color: inactiveColor,
             ),
-            const SizedBox(height: 3),
-            Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 9.5,
-                fontWeight: active ? FontWeight.w800 : FontWeight.w600,
-                color: active ? activeColor : inactiveColor,
+            const SizedBox(height: 2),
+            SizedBox(
+              width: 68,
+              child: TText(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 8.2,
+                  height: 1.0,
+                  fontWeight: FontWeight.w600,
+                  color: inactiveColor,
+                ),
               ),
             ),
           ],

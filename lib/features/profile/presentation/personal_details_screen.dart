@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:growwise_mobile_app/services/t_text.dart';
 
 class PersonalDetailsScreen extends StatefulWidget {
   const PersonalDetailsScreen({super.key});
@@ -77,10 +78,14 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final cardBackground = isDark ? const Color(0xFF111827) : Colors.white;
-    final borderColor = isDark ? const Color(0xFF355C44) : const Color(0xFFBBF7D0);
-    final iconBackground = isDark ? const Color(0xFF1F2937) : const Color(0xFFECFDF3);
-    final iconColor = isDark ? const Color(0xFF86EFAC) : const Color(0xFF077530);
-    final titleColor = isDark ? const Color(0xFFF8FAFC) : const Color(0xFF6B7280);
+    final borderColor =
+        isDark ? const Color(0xFF355C44) : const Color(0xFFBBF7D0);
+    final iconBackground =
+        isDark ? const Color(0xFF1F2937) : const Color(0xFFECFDF3);
+    final iconColor =
+        isDark ? const Color(0xFF86EFAC) : const Color(0xFF077530);
+    final titleColor =
+        isDark ? const Color(0xFFF8FAFC) : const Color(0xFF6B7280);
     final valueColor = isDark ? Colors.white : const Color(0xFF111827);
 
     return Container(
@@ -113,7 +118,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TText(
                   label,
                   style: TextStyle(
                     fontSize: 12,
@@ -122,7 +127,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
+                TText(
                   value.trim().isEmpty ? "-" : value,
                   style: TextStyle(
                     fontSize: 14.5,
@@ -143,14 +148,18 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final screenBackground = isDark ? const Color(0xFF0B1220) : Colors.white;
-    final backIconColor = theme.iconTheme.color ?? (isDark ? Colors.white : Colors.black);
+    final backIconColor =
+        theme.iconTheme.color ?? (isDark ? Colors.white : Colors.black);
     final backTitleColor =
         theme.textTheme.bodyLarge?.color ?? (isDark ? Colors.white : Colors.black);
-    final borderColor = isDark ? const Color(0xFF355C44) : const Color(0xFFBBF7D0);
+    final borderColor =
+        isDark ? const Color(0xFF355C44) : const Color(0xFFBBF7D0);
     final cardBackground = isDark ? const Color(0xFF111827) : Colors.white;
-    final iconBackground = isDark ? const Color(0xFF1F2937) : const Color(0xFFDCFCE7);
+    final iconBackground =
+        isDark ? const Color(0xFF1F2937) : const Color(0xFFDCFCE7);
     final titleColor = isDark ? Colors.white : const Color(0xFF111827);
-    final subtitleColor = isDark ? const Color(0xFFCBD5E1) : const Color(0xFF6B7280);
+    final subtitleColor =
+        isDark ? const Color(0xFFCBD5E1) : const Color(0xFF6B7280);
 
     return Scaffold(
       backgroundColor: screenBackground,
@@ -171,7 +180,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
               ),
             ),
             const SizedBox(width: 4),
-            Text(
+            TText(
               "Personal Details",
               style: TextStyle(
                 fontSize: 14,
@@ -206,7 +215,9 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: isDark ? Colors.black.withOpacity(0.35) : Colors.black.withOpacity(0.035),
+                          color: isDark
+                              ? Colors.black.withOpacity(0.35)
+                              : Colors.black.withOpacity(0.035),
                           blurRadius: 14,
                           offset: const Offset(0, 6),
                         ),
@@ -233,7 +244,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              TText(
                                 fullName.trim().isEmpty ? "User" : fullName,
                                 style: TextStyle(
                                   fontSize: 18,
